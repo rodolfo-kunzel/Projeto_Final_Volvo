@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Projeto_Final_Volvo
+namespace Concessionaria.Models
 {
     public class MCaminhao
     {

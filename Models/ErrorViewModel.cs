@@ -1,4 +1,4 @@
-namespace Projeto_Final_Volvo.Models;
+namespace Concessionaria.Models;
 
 public class ErrorViewModel
 {
