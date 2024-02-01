@@ -1,21 +1,23 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Projeto_Final_Volvo{
+namespace Concessionaria.Models
+{
     public class MPedido
     {
-        [Key]
-        public string idPedido {get;}
-        public DateTime dateAbertura {get;set;}
-        public DateTime dateEntrega {get;set;}
-        public int statusPedido {get;set;}
-        
-        [ForeignKey("Cliente")]
-        public int idCliente{ get; set;}
-        public MCliente cliente { get; set;}
-        [ForeignKey("Caminhao")]
-        public int idCaminhao{ get; set;}
-        public MCaminhao caminhao { get; set;}
+        public int Id {get;set;}
 
+        public DateTime DataAbertura {get;set;}
+        public DateTime DataEntrega {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public int StatusPedido {get;set;}
+        
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public int ClienteId{ get; set;}
+        public MCliente? Cliente { get; set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public required ICollection<MCaminhao> Caminhoes { get; set;}
     }
 }

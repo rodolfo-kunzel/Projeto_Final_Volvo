@@ -1,23 +1,33 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Projeto_Final_Volvo{
+namespace Concessionaria.Models
+{
     public class MCaminhao
     {
-        [Key]
-        public string idCaminhao {get;}
-        public int valor {get;set;}
-        public int numeroChassi {get;set;}
-        public string cor {get;set;}
-        [ForeignKey("ModeloCaminhao")]
-        public int idModelo{ get; set;}
-        public MModeloCaminhao? modeloCaminhao { get; set;}
-        [ForeignKey("Montadora")]
-        public int idMontadora{ get; set;}
-        public MMontadora? montadora { get; set;}
-        [ForeignKey("Concessionaria")]
-        public int idConcessionaria{ get; set;}
-        public MConcessionaria? concessionaria { get; set;}
+        public int Id {get;set;}
 
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public double Valor {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(17)]
+        public required string NumeroChassi {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [MaxLength(20)]
+        public required string Cor {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public int ModeloId{ get; set;}
+        public MModeloCaminhao? Modelo { get; set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public int MontadoraId{ get; set;}
+        public MMontadora? Montadora { get; set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public int ConcessionariaId{ get; set;}
+        public MConcessionaria? Concessionaria { get; set;}
     }
 }

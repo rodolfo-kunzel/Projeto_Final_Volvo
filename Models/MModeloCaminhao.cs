@@ -1,16 +1,36 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Projeto_Final_Volvo{
+namespace Concessionaria.Models
+{
     public class MModeloCaminhao
     {
-        [Key]
-        public string idModeloCaminhao {get;}
-        public string cabine {get;set;}
-        public string motor {get;set;}
-        public string transmissao {get;set;}
-        public string eixo {get;set;}
-        public string ferio {get;set;}
-        public string suspensao {get;set;}
+        public int Id {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [MaxLength(30)]
+        public required string Nome {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [MaxLength(30)]
+        public required string Cabine {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [MaxLength(30)]
+        public required string Motor {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [MaxLength(30)]
+        public required string Transmissao {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [MaxLength(30)]
+        public required string Tanque {get;set;}
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [MaxLength(30)]
+        public required string Eixo {get;set;}
+
+        public required ICollection<MCaminhao> Caminhoes { get; set;}
     }
 }

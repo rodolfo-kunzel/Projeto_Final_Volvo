@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Projeto_Final_Volvo.Models;
+using Concessionaria.Models;
 
-namespace Projeto_Final_Volvo.Controllers;
+namespace Concessionaria.Controllers;
 
 public class HomeController : Controller
 {
