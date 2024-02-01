@@ -6,5 +6,11 @@ namespace Projeto_Final_Volvo{
     {
         [Key]
         public string idModeloCaminhao {get;}
+        public string cabine {get;set;}
+        public string motor {get;set;}
+        public string transmissao {get;set;}
+        public string eixo {get;set;}
+        public string ferio {get;set;}
+        public string suspensao {get;set;}
     }
 }
