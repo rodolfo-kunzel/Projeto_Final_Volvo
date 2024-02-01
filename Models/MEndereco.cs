@@ -9,18 +9,18 @@ namespace Projeto_Final_Volvo
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(30)]
-        public string Estado {get;set;}
+        public required string Estado {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(50)]
-        public string Cidade {get;set;}
+        public required string Cidade {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(150)]
-        public string Rua {get;set;}
+        public required string Rua {get;set;}
 
         [MaxLength(20)]
-        public string Complemento {get;set;}
+        public required string Complemento {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int Numero {get;set;}

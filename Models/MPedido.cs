@@ -18,6 +18,6 @@ namespace Projeto_Final_Volvo
         public MCliente? Cliente { get; set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        public ICollection<MCaminhao> Caminhoes { get; set;}
+        public required ICollection<MCaminhao> Caminhoes { get; set;}
     }
 }

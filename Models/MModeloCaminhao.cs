@@ -9,26 +9,28 @@ namespace Projeto_Final_Volvo
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(30)]
-        public string Nome {get;set;}
+        public required string Nome {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(30)]
-        public string Cabine {get;set;}
+        public required string Cabine {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(30)]
-        public string Motor {get;set;}
+        public required string Motor {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(30)]
-        public string Transmissao {get;set;}
+        public required string Transmissao {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(30)]
-        public string Tanque {get;set;}
+        public required string Tanque {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(30)]
-        public string Eixo {get;set;}
+        public required string Eixo {get;set;}
+
+        public required ICollection<MCaminhao> Caminhoes { get; set;}
     }
 }

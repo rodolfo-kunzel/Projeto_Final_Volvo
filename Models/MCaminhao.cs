@@ -12,11 +12,11 @@ namespace Projeto_Final_Volvo
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [StringLength(17)]
-        public string NumeroChassi {get;set;}
+        public required string NumeroChassi {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [MaxLength(20)]
-        public string Cor {get;set;}
+        public required string Cor {get;set;}
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int ModeloId{ get; set;}
