@@ -8,10 +8,34 @@ namespace Persistence
 {
     public class GeralPersistence
     {
-        public readonly ProjetoFinalDBContext _context;
+        private readonly ProjetoFinalDBContext _context;
         public GeralPersistence(ProjetoFinalDBContext _context)
         {
             this._context = _context;
+        }
+        public void Add<T>(T entity) where T : class
+        {
+            _context.Add(entity);
+        }
+
+        public void Update<T>(T entity) where T : class
+        {
+            _context.Update(entity);
+        }
+
+        public void Delete<T>(T entity) where T : class
+        {
+            _context.Remove(entity);
+        }
+
+        public void DeleteRange<T>(T[] entityArray) where T : class
+        {
+            _context.RemoveRange(entityArray);
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await _context.SaveChangesAsync()) > 0;
         }
     }
 }

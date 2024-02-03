@@ -12,7 +12,7 @@ using Persistence.ContextDB;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ProjetoFinalDBContext))]
-    [Migration("20240203011229_Initial")]
+    [Migration("20240203220446_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -106,6 +106,9 @@ namespace Persistence.Migrations
 
                     b.HasIndex("EnderecoId");
 
+                    b.HasIndex("NumeroDocumento")
+                        .IsUnique();
+
                     b.ToTable("Clientes");
                 });
 
@@ -137,6 +140,9 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CNPJ")
+                        .IsUnique();
+
                     b.HasIndex("EnderecoId");
 
                     b.ToTable("Concessionarias");
@@ -156,7 +162,6 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Complemento")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -246,6 +251,9 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CNPJ")
+                        .IsUnique();
 
                     b.HasIndex("EnderecoId");
 

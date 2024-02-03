@@ -20,7 +20,7 @@ namespace Domain
         public required string Rua {get;set;}
 
         [MaxLength(20)]
-        public required string Complemento {get;set;}
+        public string? Complemento {get;set;}
 
         [Required]
         public int Numero {get;set;}

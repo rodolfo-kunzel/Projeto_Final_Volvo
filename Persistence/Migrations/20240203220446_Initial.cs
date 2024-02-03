@@ -20,7 +20,7 @@ namespace Persistence.Migrations
                     Estado = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Cidade = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Rua = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Complemento = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Complemento = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Numero = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -199,9 +199,27 @@ namespace Persistence.Migrations
                 column: "EnderecoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Clientes_NumeroDocumento",
+                table: "Clientes",
+                column: "NumeroDocumento",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Concessionarias_CNPJ",
+                table: "Concessionarias",
+                column: "CNPJ",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Concessionarias_EnderecoId",
                 table: "Concessionarias",
                 column: "EnderecoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Montadoras_CNPJ",
+                table: "Montadoras",
+                column: "CNPJ",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Montadoras_EnderecoId",

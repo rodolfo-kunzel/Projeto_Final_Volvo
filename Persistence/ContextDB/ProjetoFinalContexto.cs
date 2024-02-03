@@ -33,6 +33,7 @@ namespace Persistence.ContextDB
 
             modelBuilder.Entity<Cliente>(entity =>
             {
+                entity.HasIndex(c => c.NumeroDocumento).IsUnique();
                 entity.HasMany(c => c.Pedidos)
                     .WithOne(p => p.Cliente)
                     .OnDelete(DeleteBehavior.ClientSetNull);
@@ -54,9 +55,16 @@ namespace Persistence.ContextDB
 
             modelBuilder.Entity<Montadora>(entity =>
             {
+                entity.HasIndex(mt => mt.CNPJ).IsUnique();
                 entity.HasMany(mt => mt.Caminhoes)
                     .WithOne(c => c.Montadora)
                     .OnDelete(DeleteBehavior.ClientSetNull);
+
+            });
+
+            modelBuilder.Entity<Concessionaria>(entity =>
+            {
+                entity.HasIndex(b => b.CNPJ).IsUnique();
             });
         }
     }
