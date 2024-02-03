@@ -28,5 +28,18 @@ namespace Persistence
 
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<Montadora> GetMontadoraByCNPJAsync(string cnpj)
+        {
+            IQueryable<Montadora> query = _context.Montadoras
+                            .Include(m => m.Caminhoes)
+                            .Include(m => m.Endereco);
+
+            query = query
+                .OrderBy(m => m.CNPJ)
+                .Where(m => m.CNPJ == cnpj);
+
+            return await query.FirstOrDefaultAsync();
+        }
     }
 }

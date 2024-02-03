@@ -38,6 +38,8 @@ namespace Application
         {
             try
             {
+                var montadora = await _montadoraPersistence.GetMontadoraByCNPJAsync(model.CNPJ);
+                if (montadora != null) throw new Exception("CNPJ já cadastrado!");
                 _geralPersistence.Add<Montadora>(model);
                 if (await _geralPersistence.SaveChangesAsync())
                 {
