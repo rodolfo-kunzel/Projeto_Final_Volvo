@@ -4,21 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.ContextDB
 {
-    public class Projeto_Final_Volvo : DbContext
+    public class ProjetoFinalDBContext : DbContext
     {
-        public DbSet<Caminhao> Caminhoes {get; set;}
-        public DbSet<Cliente> Clientes {get; set;}
-        public DbSet<Concessionaria> Concessionarias {get; set;}
-        public DbSet<Endereco> Enderecos {get; set;}
-        public DbSet<ModeloCaminhao> ModeloCaminhoes {get; set;}
-        public DbSet<Montadora> Montadoras {get; set;}
-        public DbSet<Pedido> Pedidos {get; set;}
+        public ProjetoFinalDBContext(DbContextOptions<ProjetoFinalDBContext> options) : base(options) { }
+        public DbSet<Caminhao> Caminhoes { get; set; }
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<Concessionaria> Concessionarias { get; set; }
+        public DbSet<Endereco> Enderecos { get; set; }
+        public DbSet<ModeloCaminhao> ModeloCaminhoes { get; set; }
+        public DbSet<Montadora> Montadoras { get; set; }
+        public DbSet<Pedido> Pedidos { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=;Database=ProjetoFinalDB;User Id=SA;Password=MyPass@word;TrustServerCertificate=True;MultipleActiveResultSets=true");
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder){
 
             modelBuilder.Entity<Caminhao>(entity =>
             {

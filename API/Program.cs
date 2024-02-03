@@ -1,10 +1,18 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Persistence.ContextDB;
 
+var builder = WebApplication.CreateBuilder(args);
+var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.Development.json")
+            .Build();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddDbContext<ProjetoFinalDBContext>(
+                context => context.UseSqlServer(config.GetConnectionString("Andre")) //Trocar para nome do usuário
+            );
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
