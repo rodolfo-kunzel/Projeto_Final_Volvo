@@ -16,6 +16,18 @@ namespace Persistence
             this._context = _context;
             _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
+
+        public async Task<Montadora[]> GetAllMontadorasAsync()
+        {
+            IQueryable<Montadora> query = _context.Montadoras
+                            .Include(m => m.Caminhoes)
+                            .Include(m => m.Endereco);
+
+            query = query
+                .OrderBy(m => m.Id);
+
+            return await query.ToArrayAsync();
+        }
         public async Task<Montadora> GetMontadoraByIdAsync(int id)
         {
             IQueryable<Montadora> query = _context.Montadoras

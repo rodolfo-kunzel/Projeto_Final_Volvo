@@ -20,14 +20,11 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public string getall(){
-            return "teste";
-        }
-       /*  public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var montadoras = await _montadoraService.GetAllMontadorasAsync(true);
+                var montadoras = await _montadoraService.GetAllMontadorasAsync();
                 if (montadoras == null) return NoContent();
 
                 return Ok(montadoras);
@@ -37,7 +34,7 @@ namespace API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar montadoras. Erro: {ex.Message}");
             }
-        } */
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

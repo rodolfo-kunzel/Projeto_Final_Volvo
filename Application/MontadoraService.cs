@@ -21,6 +21,19 @@ namespace Application
             _montadoraPersistence = montadoraPersistence;
         }
 
+        public async Task<Montadora[]> GetAllMontadorasAsync()
+        {
+            try
+            {
+                var montadoras = await _montadoraPersistence.GetAllMontadorasAsync();
+                return montadoras;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Montadora> GetMontadoraByIdAsync(int Id)
         {
             try
