@@ -28,7 +28,7 @@ namespace Persistence
 
             return await query.ToArrayAsync();
         }
-        public async Task<Montadora> GetMontadoraByIdAsync(int id)
+        public async Task<Montadora?> GetMontadoraByIdAsync(int id)
         {
             IQueryable<Montadora> query = _context.Montadoras
                             .Include(m => m.Caminhoes)
@@ -41,7 +41,7 @@ namespace Persistence
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<Montadora> GetMontadoraByCNPJAsync(string cnpj)
+        public async Task<Montadora?> GetMontadoraByCNPJAsync(string cnpj)
         {
             IQueryable<Montadora> query = _context.Montadoras
                             .Include(m => m.Caminhoes)
