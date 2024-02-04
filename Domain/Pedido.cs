@@ -7,17 +7,18 @@ namespace Domain
     {
         public int Id {get;set;}
 
+        [Required]
         public DateTime DataAbertura {get;set;}
-        public DateTime DataEntrega {get;set;}
+        public DateTime? DataEntrega {get;set;}
 
-        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [Required]
         public int StatusPedido {get;set;}
         
-        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [Required]
         public int ClienteId{ get; set;}
         public Cliente? Cliente { get; set;}
 
-        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [Required]
         public required ICollection<Caminhao> Caminhoes { get; set;}
     }
 }
