@@ -8,7 +8,7 @@ namespace Domain
         public int Id { get; set; }
 
         [Required]
-        [StringLength(14)]
+        [StringLength(14, MinimumLength = 14)]
         public required string CNPJ { get; set; }
 
         [Required]

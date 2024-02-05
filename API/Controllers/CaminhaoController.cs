@@ -13,10 +13,12 @@ namespace API.Controllers
     public class CaminhaoController : ControllerBase
     {
         private readonly CaminhaoService _caminhaoService;
+        private readonly ILogger<CaminhaoController> _logger;
 
-        public CaminhaoController(CaminhaoService caminhaoService)
+        public CaminhaoController(CaminhaoService caminhaoService, ILogger<CaminhaoController> logger)
         {
             _caminhaoService = caminhaoService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -31,6 +33,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar caminhoes. Erro: {ex.Message}");
             }
@@ -48,6 +51,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar recuperar caminhoes. Erro: {ex.Message}");
             }
@@ -65,6 +69,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar adicionar a caminhao. Erro: {ex.Message}");
             }
@@ -82,6 +87,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar atualizar o caminhao. Erro: {ex.Message}");
             }
@@ -101,6 +107,7 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     $"Erro ao tentar excluir o caminhão. Erro: {ex.Message}");
             }
