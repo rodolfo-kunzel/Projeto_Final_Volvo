@@ -21,7 +21,8 @@ namespace Persistence
         {
             IQueryable<Montadora> query = _context.Montadoras
                             .Include(m => m.Caminhoes)
-                            .Include(m => m.Endereco);
+                            .Include(m => m.Endereco)
+                            .Include(m => m.Faturamento);
 
             query = query
                 .OrderBy(m => m.Id);
@@ -32,7 +33,8 @@ namespace Persistence
         {
             IQueryable<Montadora> query = _context.Montadoras
                             .Include(m => m.Caminhoes)
-                            .Include(m => m.Endereco);
+                            .Include(m => m.Endereco)
+                            .Include(m => m.Faturamento);
 
             query = query
                 .OrderBy(m => m.Id)
@@ -45,7 +47,8 @@ namespace Persistence
         {
             IQueryable<Montadora> query = _context.Montadoras
                             .Include(m => m.Caminhoes)
-                            .Include(m => m.Endereco);
+                            .Include(m => m.Endereco)
+                            .Include(m => m.Faturamento);
 
             query = query
                 .OrderBy(m => m.CNPJ)

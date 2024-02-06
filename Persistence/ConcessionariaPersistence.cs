@@ -21,7 +21,8 @@ namespace Persistence
         {
             IQueryable<Concessionaria> query = _context.Concessionarias
                             .Include(c => c.Caminhoes)
-                            .Include(c => c.Endereco);
+                            .Include(c => c.Endereco)
+                            .Include(c => c.Faturamento);
 
             query = query
                 .OrderBy(m => m.Id);
@@ -32,7 +33,8 @@ namespace Persistence
         {
             IQueryable<Concessionaria> query = _context.Concessionarias
                             .Include(c => c.Caminhoes)
-                            .Include(c => c.Endereco);
+                            .Include(c => c.Endereco)
+                            .Include(c => c.Faturamento);
 
             query = query
                 .OrderBy(c => c.Id)
@@ -45,7 +47,8 @@ namespace Persistence
         {
             IQueryable<Concessionaria> query = _context.Concessionarias
                             .Include(c => c.Caminhoes)
-                            .Include(c => c.Endereco);
+                            .Include(c => c.Endereco)
+                            .Include(c => c.Faturamento);
 
             query = query
                 .OrderBy(c => c.CNPJ)
