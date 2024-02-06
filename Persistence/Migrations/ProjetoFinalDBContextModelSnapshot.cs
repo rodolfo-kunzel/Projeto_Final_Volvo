@@ -271,7 +271,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("DataAbertura")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DataEntrega")
+                    b.Property<DateTime?>("DataEntrega")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("StatusPedido")
