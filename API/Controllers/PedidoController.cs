@@ -95,9 +95,17 @@ namespace API.Controllers
                 var pedido = await _pedidoService.GetPedidoByIdAsync(id);
                 if (pedido == null) return NoContent();
 
-                return (await _pedidoService.DeletePedido(pedido.Id)) ?
-                     Ok(new { message = "Pedido excluída com sucesso!" }) :
-                     throw new Exception("Ocorreu um problema não específico ao tentar excluir a pedido.");
+                pedido.StatusPedido = 2;
+
+                if (await _pedidoService.UpdatePedido(pedido.Id, pedido) != null)
+                {
+                    if (await _pedidoService.CancelPedido(pedido.Id))
+                    {
+                        return Ok("Pedido cancelado com sucesso!");
+                    }
+                }
+
+                throw new Exception("Ocorreu um problema não específico ao tentar excluir o pedido.");
             }
             catch (Exception ex)
             {

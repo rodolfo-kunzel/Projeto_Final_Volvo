@@ -34,9 +34,9 @@ namespace Persistence
         {
             IQueryable<Caminhao> query = _context.Caminhoes;
 
-            if (includeModelo) query.Include(c => c.Modelo);
-            if (includeMontadora) query.Include(c => c.Montadora);
-            if (includeConcessionaria) query.Include(c => c.Concessionaria);
+            if (includeModelo) query = query.Include(c => c.Modelo);
+            if (includeMontadora) query = query.Include(c => c.Montadora);
+            if (includeConcessionaria) query = query.Include(c => c.Concessionaria);
 
             query = query
                 .OrderBy(c => c.Id)

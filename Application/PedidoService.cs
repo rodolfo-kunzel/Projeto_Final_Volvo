@@ -124,6 +124,20 @@ namespace Application
                 ?? throw new Exception("Pedido selecionada para update não encontrada!");
 
                 model.Id = pedido.Id;
+
+                if (model.StatusPedido == 1)
+                {
+                    model.DataEntrega = DateTime.Now;
+                }
+
+                if (model.ListaCaminhoes != null)
+                {
+                    foreach (var item in model.ListaCaminhoes)
+                    {
+                        await _caminhaoService.UpdateCaminhaoPedido(item, pedido.Id);
+                    }
+                }
+
                 _geralPersistence.Update<Pedido>(model);
                 if (await _geralPersistence.SaveChangesAsync())
                 {
@@ -138,14 +152,20 @@ namespace Application
             }
         }
 
-        public async Task<bool> DeletePedido(int Id)
+        public async Task<bool> CancelPedido(int Id)
         {
             try
             {
-                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id)
-                ?? throw new Exception("Pedido selecionada para exclusão não encontrada!");
-                _geralPersistence.Delete(pedido);
-                return await _geralPersistence.SaveChangesAsync();
+                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id, false, false)
+                ?? throw new Exception("Pedido selecionada para cancelamento não encontrada!");
+                if (pedido.Caminhoes == null) throw new Exception("Pedido selecionada para cancelamento não possui caminhões!");
+
+                foreach (var item in pedido.Caminhoes)
+                {
+                    await _caminhaoService.DeletePedidoIdFromCaminhao(item.Id);
+                }
+                return true;
+                //return await _geralPersistence.SaveChangesAsync();
             }
             catch (Exception ex)
             {

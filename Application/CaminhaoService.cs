@@ -189,7 +189,6 @@ namespace Application
                 caminhao.PedidoId = idPedido;
                 _geralPersistence.Update<Caminhao>(caminhao);
 
-                //return await _geralPersistence.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -205,6 +204,23 @@ namespace Application
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? 
                 throw new CaminhaoNuloException(Messages.caminhaoNulo);
                 _geralPersistence.Delete(caminhao);
+                return await _geralPersistence.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> DeletePedidoIdFromCaminhao(int Id)
+        {
+            try
+            {
+                var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id, false, false, false) ?? 
+                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+
+                caminhao.PedidoId = null;
+                _geralPersistence.Update(caminhao);
                 return await _geralPersistence.SaveChangesAsync();
             }
             catch (Exception ex)
