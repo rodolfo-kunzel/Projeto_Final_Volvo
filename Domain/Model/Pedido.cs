@@ -18,7 +18,6 @@ namespace Domain
         public int ClienteId{ get; set;}
         public Cliente? Cliente { get; set;}
 
-        [Required]
-        public required ICollection<Caminhao> Caminhoes { get; set;}
+        public ICollection<Caminhao>? Caminhoes { get; set;}
     }
 }
