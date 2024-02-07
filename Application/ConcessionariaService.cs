@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Domain;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application
@@ -27,7 +23,20 @@ namespace Application
             try
             {
                 var concessionarias = await _concessionariaPersistence.GetAllConcessionariasAsync();
+
+                if (concessionarias == null || concessionarias.Length == 0) {
+                    throw new ConcessionariasNaoEncontradasException(Messages.listaConcessionariasVazia);
+                }
+                
                 return concessionarias;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -35,12 +44,22 @@ namespace Application
             }
         }
 
-        public async Task<Concessionaria?> GetConcessionariaByIdAsync(int Id)
+        public async Task<Concessionaria> GetConcessionariaByIdAsync(int Id)
         {
             try
             {
-                var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id);
+                var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id)??
+                throw new ConcessionariaNuloException(Messages.concessionariaNula);
+
                 return concessionaria;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -77,13 +96,31 @@ namespace Application
             try
             {
                 var concessionaria = await _concessionariaPersistence.GetConcessionariaByCNPJAsync(model.CNPJ);
-                if (concessionaria != null) throw new Exception("CNPJ já cadastrado!");
+
+                if (concessionaria != null){
+                    throw new ConcessionariaRepetidaException(Messages.CNPJExistente);
+                } 
+
                 _geralPersistence.Add<Concessionaria>(model);
-                if (await _geralPersistence.SaveChangesAsync())
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
                 {
-                    return await _concessionariaPersistence.GetConcessionariaByIdAsync(model.Id);
+                    throw new ConcessionariaNaoSalvaException(Messages.erroAoSalvarConcessionaria);
                 }
-                return null;
+
+                concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(model.Id);
+
+                return concessionaria;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -95,17 +132,31 @@ namespace Application
         {
             try
             {
-                var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id)
-                ?? throw new Exception("Concessionaria selecionada para update não encontrada!");
+                var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id) ??
+                throw new ConcessionariaNuloException(Messages.concessionariaNula);
 
                 model.Id = concessionaria.Id;
-                _geralPersistence.Update<Concessionaria>(model);
-                if (await _geralPersistence.SaveChangesAsync())
-                {
-                    return await _concessionariaPersistence.GetConcessionariaByIdAsync(model.Id);
 
+                _geralPersistence.Update<Concessionaria>(model);
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                    throw new ConcessionariaNaoSalvaException(Messages.erroAoSalvarConcessionaria);
                 }
-                return null;
+
+                concessionaria =  await _concessionariaPersistence.GetConcessionariaByIdAsync(model.Id);
+
+                return concessionaria;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -117,10 +168,26 @@ namespace Application
         {
             try
             {
-                var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id)
-                ?? throw new Exception("Concessionaria selecionada para exclusão não encontrada!");
+                var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id)??
+                throw new ConcessionariaNuloException(Messages.concessionariaNula);
+
                 _geralPersistence.Delete(concessionaria);
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                     throw new ConcessionariaNaoSalvaException(Messages.erroAoSalvarConcessionaria);
+                }
                 return await _geralPersistence.SaveChangesAsync();
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
