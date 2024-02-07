@@ -20,7 +20,9 @@ namespace Persistence
         public async Task<Pedido[]> GetAllPedidosAsync()
         {
             IQueryable<Pedido> query = _context.Pedidos
-                            .Include(p => p.Cliente);
+                            .Include(p => p.Cliente)
+                            .Include(c => c.Caminhoes);
+
 
             query = query
                 .OrderBy(c => c.Id);
@@ -30,7 +32,8 @@ namespace Persistence
         public async Task<Pedido?> GetPedidoByIdAsync(int id)
         {
             IQueryable<Pedido> query = _context.Pedidos
-                            .Include(p => p.Cliente);
+                            .Include(p => p.Cliente)
+                            .Include(c => c.Caminhoes);
 
             query = query
                 .OrderBy(c => c.Id)

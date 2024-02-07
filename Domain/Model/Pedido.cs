@@ -19,5 +19,8 @@ namespace Domain
         public Cliente? Cliente { get; set;}
 
         public ICollection<Caminhao>? Caminhoes { get; set;}
+
+        [NotMapped]
+        public required List<int> ListaCaminhoes { get; set;}
     }
 }

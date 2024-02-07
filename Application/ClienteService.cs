@@ -76,8 +76,7 @@ namespace Application
         {
             try
             {
-                var cliente = await _clientePersistence.GetClienteByNumeroDocumentoAsync(model.NumeroDocumento) ??
-                throw new ClienteNuloException(Messages.clienteNulo);
+                var cliente = await _clientePersistence.GetClienteByNumeroDocumentoAsync(model.NumeroDocumento);
                 
                 if (cliente != null) {
                     throw new ClienteRepetidoException(Messages.numeroDocumentoExistente);

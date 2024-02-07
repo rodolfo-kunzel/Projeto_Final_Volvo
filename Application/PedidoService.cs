@@ -76,17 +76,16 @@ namespace Application
             }
         }
 
-        public async Task<Pedido> AddPedido(Pedido model, string ids)
+        public async Task<Pedido> AddPedido(Pedido model, List<int> idsCaminhao)
         {
             try
             {
-                var listaIds = _caminhaoService.GetListofIds(ids);
-                if (await _caminhaoService.IdListIsValid(listaIds))
+                if (await _caminhaoService.IdListIsValid(idsCaminhao))
                 {
                     _geralPersistence.Add<Pedido>(model);
                     var pedidoId = _pedidoPersistence._context.Entry(model).Property(e => e.Id).CurrentValue;
 
-                    foreach (var item in listaIds)
+                    foreach (var item in idsCaminhao)
                     {
                         await _caminhaoService.UpdateCaminhaoPedido(item, pedidoId);
                     }

@@ -53,12 +53,12 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("{idCaminhoes}")]
-        public async Task<IActionResult> Post(Pedido model, string idCaminhoes)
+        [HttpPost]
+        public async Task<IActionResult> Post(Pedido model)
         {
             try
             {
-                var pedido = await _pedidoService.AddPedido(model, idCaminhoes);
+                var pedido = await _pedidoService.AddPedido(model, model.ListaCaminhoes);
                 if (pedido == null) return NoContent();
 
                 return Ok(pedido);

@@ -78,7 +78,8 @@ namespace Persistence.Migrations
                     CNPJ = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Telefone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    EnderecoId = table.Column<int>(type: "int", nullable: false)
+                    EnderecoId = table.Column<int>(type: "int", nullable: false),
+                    FaturamentoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -100,7 +101,8 @@ namespace Persistence.Migrations
                     CNPJ = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Comissao = table.Column<double>(type: "float", nullable: false),
-                    EnderecoId = table.Column<int>(type: "int", nullable: false)
+                    EnderecoId = table.Column<int>(type: "int", nullable: false),
+                    FaturamentoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,6 +133,31 @@ namespace Persistence.Migrations
                         name: "FK_Pedidos_Clientes_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Clientes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Faturamento",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ValorFatura = table.Column<double>(type: "float", nullable: false),
+                    ConcessionariaId = table.Column<int>(type: "int", nullable: false),
+                    MontadoraId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Faturamento", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Faturamento_Concessionarias_ConcessionariaId",
+                        column: x => x.ConcessionariaId,
+                        principalTable: "Concessionarias",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Faturamento_Montadoras_MontadoraId",
+                        column: x => x.MontadoraId,
+                        principalTable: "Montadoras",
                         principalColumn: "Id");
                 });
 
@@ -189,6 +216,12 @@ namespace Persistence.Migrations
                 column: "MontadoraId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Caminhoes_NumeroChassi",
+                table: "Caminhoes",
+                column: "NumeroChassi",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Caminhoes_PedidoId",
                 table: "Caminhoes",
                 column: "PedidoId");
@@ -216,6 +249,19 @@ namespace Persistence.Migrations
                 column: "EnderecoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Faturamento_ConcessionariaId",
+                table: "Faturamento",
+                column: "ConcessionariaId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Faturamento_MontadoraId",
+                table: "Faturamento",
+                column: "MontadoraId",
+                unique: true,
+                filter: "[MontadoraId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Montadoras_CNPJ",
                 table: "Montadoras",
                 column: "CNPJ",
@@ -239,16 +285,19 @@ namespace Persistence.Migrations
                 name: "Caminhoes");
 
             migrationBuilder.DropTable(
-                name: "Concessionarias");
+                name: "Faturamento");
 
             migrationBuilder.DropTable(
                 name: "ModeloCaminhoes");
 
             migrationBuilder.DropTable(
-                name: "Montadoras");
+                name: "Pedidos");
 
             migrationBuilder.DropTable(
-                name: "Pedidos");
+                name: "Concessionarias");
+
+            migrationBuilder.DropTable(
+                name: "Montadoras");
 
             migrationBuilder.DropTable(
                 name: "Clientes");

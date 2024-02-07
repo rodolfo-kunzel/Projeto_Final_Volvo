@@ -23,9 +23,8 @@ namespace Domain
         public int EnderecoId { get; set; }
         public Endereco? Endereco { get; set; }
 
-        [Required]
-        public required int FaturamentoId { get; set; }
-        public required Faturamento Faturamento { get; set; }
+        public int? FaturamentoId { get; set; }
+        public Faturamento? Faturamento { get; set; }
 
         public ICollection<Caminhao>? Caminhoes { get; set; }
     }

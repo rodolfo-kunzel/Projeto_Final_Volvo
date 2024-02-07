@@ -195,41 +195,6 @@ namespace Application
             }
         }
 
-         public List<int> GetListofIds(string IDs)
-        {
-            try
-            {
-                // Padrão de expressão regular para encontrar números inteiros positivos
-                string pattern = @"\b\d+\b";
-
-                // Criar objeto Regex
-                Regex regex = new Regex(pattern);
-
-                // Lista para armazenar os números inteiros positivos
-                List<int> IdList = new List<int>();
-
-                // Encontrar correspondências
-                MatchCollection matches = regex.Matches(IDs);
-
-                // Iterar sobre as correspondências e adicionar os IDs à lista
-                foreach (Match match in matches)
-                {
-                    int number;
-                    if (int.TryParse(match.Value, out number))
-                    {
-                        IdList.Add(number);
-                    }
-                }
-                if (IdList == null) throw new Exception("Nenhum ID foi selecionado");
-
-                return IdList;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         public async Task<bool> IdListIsValid(List<int> IDs)
         {
             try
