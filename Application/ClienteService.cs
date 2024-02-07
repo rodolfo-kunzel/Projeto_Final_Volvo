@@ -76,6 +76,7 @@ namespace Application
         {
             try
             {
+
                 var cliente = await _clientePersistence.GetClienteByNumeroDocumentoAsync(model.NumeroDocumento) ??
                 throw new ClienteNuloException(Mensagens.clienteNulo);
                 

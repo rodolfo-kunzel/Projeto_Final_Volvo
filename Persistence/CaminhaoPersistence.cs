@@ -29,14 +29,14 @@ namespace Persistence
 
             return await query.ToArrayAsync();
         }
-        public async Task<Caminhao?> GetCaminhaoByIdAsync(int id, bool includeModelo = true, 
+        public async Task<Caminhao?> GetCaminhaoByIdAsync(int id, bool includeModelo = true,
                             bool includeMontadora = true, bool includeConcessionaria = true)
         {
             IQueryable<Caminhao> query = _context.Caminhoes;
 
-            if(includeModelo) query.Include(c => c.Modelo);
-            if(includeMontadora) query.Include(c => c.Montadora);
-            if(includeConcessionaria) query.Include(c => c.Concessionaria);
+            if (includeModelo) query = query.Include(c => c.Modelo);
+            if (includeMontadora) query = query.Include(c => c.Montadora);
+            if (includeConcessionaria) query = query.Include(c => c.Concessionaria);
 
             query = query
                 .OrderBy(c => c.Id)
@@ -44,6 +44,21 @@ namespace Persistence
 
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<Caminhao[]> GetSoldCaminhaoByConcessionariaIdAsync(int idConcessionaria)
+        {
+            IQueryable<Caminhao> query = _context.Caminhoes;
+            var month = DateTime.Now.Month;
+            var year = DateTime.Now.Year;
+            query = query
+                .OrderBy(c => c.Id)
+                .Where(c => c.ConcessionariaId == idConcessionaria)
+                .Where(c => c.Pedido.DataEntrega.Year == year)
+                .Where(c => c.Pedido.DataEntrega.Month == month);
+
+            return await query.ToArrayAsync();
+        }
+
 
         public async Task<Caminhao?> GetCaminhaoByNumeroChassiAsync(string numeroChassi)
         {

@@ -39,6 +39,7 @@ builder.Services.AddScoped<ConcessionariaService>();
 builder.Services.AddScoped<ModeloCaminhaoService>();
 builder.Services.AddScoped<MontadoraService>();
 builder.Services.AddScoped<PedidoService>();
+builder.Services.AddScoped<FaturamentoService>();
 
 builder.Services.AddScoped<GeralPersistence>();
 builder.Services.AddScoped<CaminhaoPersistence>();
@@ -47,6 +48,7 @@ builder.Services.AddScoped<ConcessionariaPersistence>();
 builder.Services.AddScoped<ModeloCaminhaoPersistence>();
 builder.Services.AddScoped<MontadoraPersistence>();
 builder.Services.AddScoped<PedidoPersistence>();
+builder.Services.AddScoped<FaturamentoPersistence>();
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 

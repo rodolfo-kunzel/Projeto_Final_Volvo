@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,10 +9,13 @@ namespace Domain
         public int Id {get;set;}
 
         [Required]
-        public DateTime DataAbertura {get;set;}
-        public DateTime? DataEntrega {get;set;}
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{YYYY/MM/DD:0}")]
+        public DateTime DataAbertura {get;set;} = DateTime.Now;
+
+        public DateTime DataEntrega {get;set;} = new DateTime(0);
 
         [Required]
+        [DefaultValue(0)]
         public int StatusPedido {get;set;}
         
         [Required]
@@ -19,5 +23,8 @@ namespace Domain
         public Cliente? Cliente { get; set;}
 
         public ICollection<Caminhao>? Caminhoes { get; set;}
+
+        [NotMapped]
+        public required List<int> ListaCaminhoes { get; set;}
     }
 }

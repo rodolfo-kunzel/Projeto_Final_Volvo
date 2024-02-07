@@ -14,12 +14,14 @@ namespace Persistence.ContextDB
         public DbSet<ModeloCaminhao> ModeloCaminhoes { get; set; }
         public DbSet<Montadora> Montadoras { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
+        public DbSet<Faturamento> Faturamento { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             modelBuilder.Entity<Caminhao>(entity =>
             {
+                entity.HasIndex(c => c.NumeroChassi).IsUnique();
                 entity.HasOne(c => c.Modelo)
                     .WithMany(m => m.Caminhoes)
                     .OnDelete(DeleteBehavior.ClientSetNull);
@@ -41,8 +43,12 @@ namespace Persistence.ContextDB
 
             modelBuilder.Entity<Concessionaria>(entity =>
             {
+                entity.HasIndex(cc => cc.CNPJ).IsUnique();
                 entity.HasMany(cc => cc.Caminhoes)
                     .WithOne(c => c.Concessionaria)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+                entity.HasOne(cc => cc.Faturamento)
+                    .WithOne(f => f.Concessionaria)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
@@ -59,12 +65,22 @@ namespace Persistence.ContextDB
                 entity.HasMany(mt => mt.Caminhoes)
                     .WithOne(c => c.Montadora)
                     .OnDelete(DeleteBehavior.ClientSetNull);
-
+                entity.HasOne(mt => mt.Faturamento)
+                    .WithOne(f => f.Montadora)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-            modelBuilder.Entity<Concessionaria>(entity =>
+            modelBuilder.Entity<Faturamento>(entity =>
             {
-                entity.HasIndex(b => b.CNPJ).IsUnique();
+                entity.HasOne(f => f.Concessionaria)
+                    .WithOne(cc => cc.Faturamento)
+                    .HasForeignKey<Faturamento>(f => f.ConcessionariaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+                entity.HasOne(f => f.Montadora)
+                    .WithOne(mt => mt.Faturamento)
+                    .HasForeignKey<Faturamento>(f => f.MontadoraId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+                entity.HasMany(f => f.Pedidos);
             });
         }
     }

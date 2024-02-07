@@ -104,12 +104,13 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("{idCaminhoes}")]
-        public async Task<IActionResult> Post(Pedido model, string idCaminhoes)
+        [HttpPost]
+        public async Task<IActionResult> Post(Pedido model)
         {
             try
             {
-                var pedido = await _pedidoService.AddPedido(model, idCaminhoes);
+                var pedido = await _pedidoService.AddPedido(model, model.ListaCaminhoes);
+
 
                 return Ok(pedido);
             }
@@ -181,9 +182,17 @@ namespace API.Controllers
             {
                 var pedido = await _pedidoService.GetPedidoByIdAsync(id);
 
-                return (await _pedidoService.DeletePedido(pedido.Id)) ?
-                     Ok(new { message = Mensagens.pedidoRemovidoSucesso }) :
-                     throw new PedidoNaoPodeSerDeletadoException(Mensagens.pedidoRemovidaErro);
+                pedido.StatusPedido = 2;
+
+                if (await _pedidoService.UpdatePedido(pedido.Id, pedido) != null)
+                {
+                    if (await _pedidoService.CancelPedido(pedido.Id))
+                    {
+                        return Ok("Pedido cancelado com sucesso!");
+                    }
+                }
+
+                throw new Exception("Ocorreu um problema não específico ao tentar excluir o pedido.");
             }
             catch (PedidosNaoEncontradosException ex) 
             {

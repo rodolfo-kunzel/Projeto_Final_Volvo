@@ -69,6 +69,24 @@ namespace Application
             }
         }
 
+        public async Task<Caminhao[]> GetSoldCaminhaoByConcessionariaIdAsync(int idConcessionaria)
+        {
+            try
+            {
+                var caminhoes = await _caminhaoPersistence.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria);
+
+                return caminhoes;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Caminhao> GetCaminhaoByNumeroChassiAsync(string numeroChassi)
         {
             try
@@ -211,7 +229,6 @@ namespace Application
                 caminhao.PedidoId = idPedido;
                 _geralPersistence.Update<Caminhao>(caminhao);
 
-                //return await _geralPersistence.SaveChangesAsync();
                 return true;
             }
             catch (SqlException)
@@ -251,34 +268,16 @@ namespace Application
             }
         }
 
-         public List<int> GetListofIds(string IDs)
+        public async Task<bool> DeletePedidoIdFromCaminhao(int Id)
         {
             try
             {
-                // Padrão de expressão regular para encontrar números inteiros positivos
-                string pattern = @"\b\d+\b";
+                var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id, false, false, false) ?? 
+                throw new CaminhaoNuloException(Messages.caminhaoNulo);
 
-                // Criar objeto Regex
-                Regex regex = new Regex(pattern);
-
-                // Lista para armazenar os números inteiros positivos
-                List<int> IdList = new List<int>();
-
-                // Encontrar correspondências
-                MatchCollection matches = regex.Matches(IDs);
-
-                // Iterar sobre as correspondências e adicionar os IDs à lista
-                foreach (Match match in matches)
-                {
-                    int number;
-                    if (int.TryParse(match.Value, out number))
-                    {
-                        IdList.Add(number);
-                    }
-                }
-                if (IdList == null) throw new Exception("Nenhum ID foi selecionado");
-
-                return IdList;
+                caminhao.PedidoId = null;
+                _geralPersistence.Update(caminhao);
+                return await _geralPersistence.SaveChangesAsync();
             }
             catch (SqlException)
             {

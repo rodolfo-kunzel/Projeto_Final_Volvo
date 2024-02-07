@@ -20,21 +20,26 @@ namespace Persistence
         public async Task<Pedido[]> GetAllPedidosAsync()
         {
             IQueryable<Pedido> query = _context.Pedidos
-                            .Include(p => p.Cliente);
+                            .Include(p => p.Cliente)
+                            .Include(c => c.Caminhoes);
+
 
             query = query
-                .OrderBy(c => c.Id);
+                .OrderBy(p => p.Id);
 
             return await query.ToArrayAsync();
         }
-        public async Task<Pedido?> GetPedidoByIdAsync(int id)
+        public async Task<Pedido?> GetPedidoByIdAsync(int id, bool includeCliente = true,
+                            bool includeCaminhoes = true)
         {
-            IQueryable<Pedido> query = _context.Pedidos
-                            .Include(p => p.Cliente);
+            IQueryable<Pedido> query = _context.Pedidos;
+
+            if (includeCliente) query =  query.Include(p => p.Cliente);
+            if (includeCaminhoes) query =  query.Include(p => p.Caminhoes);
 
             query = query
-                .OrderBy(c => c.Id)
-                .Where(c => c.Id == id);
+                .OrderBy(p => p.Id)
+                .Where(p => p.Id == id);
 
             return await query.FirstOrDefaultAsync();
         }
@@ -47,7 +52,7 @@ namespace Persistence
 
             query = query
                 .OrderBy(p => p.DataAbertura)
-                .Where(c => c.DataAbertura == date);
+                .Where(p => p.DataAbertura == date);
 
             return await query.FirstOrDefaultAsync();
         }
@@ -59,7 +64,7 @@ namespace Persistence
 
             query = query
                 .OrderBy(p => p.DataAbertura)
-                .Where(c => c.DataAbertura >= minDate && c.DataAbertura <= maxDate);
+                .Where(p => p.DataAbertura >= minDate && p.DataAbertura <= maxDate);
 
             return await query.ToArrayAsync();
         }

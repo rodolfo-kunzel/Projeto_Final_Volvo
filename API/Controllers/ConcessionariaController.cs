@@ -31,17 +31,17 @@ namespace API.Controllers
 
                 return Ok(concessionarias);
             }
-            catch (ConcessionariasNaoEncontradasException ex) 
+            catch (ConcessionariasNaoEncontradasException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -57,20 +57,22 @@ namespace API.Controllers
             try
             {
                 var concessionaria = await _concessionariaService.GetConcessionariaByIdAsync(id);
+                if (concessionaria == null) return NoContent();
 
                 return Ok(concessionaria);
             }
-            catch (ConcessionariaNuloException ex) 
+            catch (ConcessionariaNuloException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Messages.concessionariaNula} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+
             }
             catch (Exception ex)
             {
@@ -90,29 +92,29 @@ namespace API.Controllers
 
                 return Ok(concessionaria);
             }
-            catch (ConcessionariaNuloException ex) 
+            catch (ConcessionariaNuloException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Messages.concessionariaNula} Erro: {ex.Message}");
             }
             catch (ConcessionariaRepetidaException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroDados} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Messages.erroDados} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroDados} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Messages.erroDados} Erro: {ex.Message}");
             }
-            catch (ConcessionariaNaoSalvaException ex) 
+            catch (ConcessionariaNaoSalvaException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Messages.erroAoSalvarConcessionaria} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -131,23 +133,24 @@ namespace API.Controllers
 
                 return Ok(concessionaria);
             }
-            catch (ConcessionariaNuloException ex) 
+            catch (ConcessionariaNuloException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Messages.concessionariaNula} Erro: {ex.Message}");
             }
-            catch (ConcessionariaNaoSalvaException ex) 
+            catch (ConcessionariaNaoSalvaException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Messages.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -168,7 +171,7 @@ namespace API.Controllers
                      Ok(new { message = Mensagens.concessionariaRemovidoSucesso }) :
                      throw new ConcessionariaNaoPodeSerDeletadaException(Mensagens.concessionariaRemovidoSucesso);
             }
-            catch (ConcessionariaNuloException ex) 
+            catch (ConcessionariaNuloException ex)
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status404NotFound,
@@ -180,17 +183,19 @@ namespace API.Controllers
                  return StatusCode(StatusCodes.Status404NotFound,
                     $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
             }
-            catch (ConcessionariaNaoSalvaException ex) 
+            catch (ConcessionariaNaoSalvaException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Messages.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+
             }
             catch (Exception ex)
             {

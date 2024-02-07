@@ -70,7 +70,20 @@ namespace Application
             }
         }
 
-        public async Task<Pedido> GetPedidoByDateAsync(DateTime date)
+        public async Task<Pedido?> GetPedidoByConcessionariaIdAsync(int Id)
+        {
+            try
+            {
+                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id);
+                return pedido;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Pedido?> GetPedidoByDateAsync(DateTime date)
         {
             try
             {
@@ -119,32 +132,24 @@ namespace Application
             }
         }
 
-        public async Task<Pedido> AddPedido(Pedido model, string ids)
+        public async Task<Pedido?> AddPedido(Pedido model, List<int> idsCaminhao)
         {
             try
             {
-                var listaIds = _caminhaoService.GetListofIds(ids);
-
-                var listaValida = await _caminhaoService.IdListIsValid(listaIds);
-
-                if (!listaValida) {
-                    throw new PedidoIdInvalidoException(Mensagens.pedidoIdInvalido);
-                }
-
-                _geralPersistence.Add<Pedido>(model);
-
-                var pedidoId = _pedidoPersistence._context.Entry(model).Property(e => e.Id).CurrentValue;
-
-                foreach (var item in listaIds)
+                if (await _caminhaoService.IdListIsValid(idsCaminhao))
                 {
-                    await _caminhaoService.UpdateCaminhaoPedido(item, pedidoId);
-                }
+                    _geralPersistence.Add<Pedido>(model);
+                    var pedidoId = _pedidoPersistence._context.Entry(model).Property(e => e.Id).CurrentValue;
 
-                var salvo = await _geralPersistence.SaveChangesAsync();
+                    foreach (var item in idsCaminhao)
+                    {
+                        await _caminhaoService.UpdateCaminhaoPedido(item, pedidoId);
+                    }
 
-                if (!salvo)
-                {
-                    throw new PedidoNaoSalvoException(Mensagens.erroAoSalvarPedido);
+                    if (await _geralPersistence.SaveChangesAsync())
+                    {
+                        return await _pedidoPersistence.GetPedidoByIdAsync(model.Id);
+                    }
                 }
 
                 var pedido = await _pedidoPersistence.GetPedidoByIdAsync(model.Id) ??
@@ -175,6 +180,19 @@ namespace Application
 
                 model.Id = pedido.Id;
 
+                if (model.StatusPedido == 1)
+                {
+                    model.DataEntrega = DateTime.Now;
+                }
+
+                if (model.ListaCaminhoes != null)
+                {
+                    foreach (var item in model.ListaCaminhoes)
+                    {
+                        await _caminhaoService.UpdateCaminhaoPedido(item, pedido.Id);
+                    }
+                }
+
                 _geralPersistence.Update<Pedido>(model);
 
                 var salvo = await _geralPersistence.SaveChangesAsync();
@@ -203,31 +221,20 @@ namespace Application
             }
         }
 
-        public async Task<bool> DeletePedido(int Id)
+        public async Task<bool> CancelPedido(int Id)
         {
             try
             {
-                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id) ??
-                throw new PedidoNuloException(Mensagens.pedidoNulo);
+                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id, false, false)
+                ?? throw new Exception("Pedido selecionada para cancelamento não encontrada!");
+                if (pedido.Caminhoes == null) throw new Exception("Pedido selecionada para cancelamento não possui caminhões!");
 
-                _geralPersistence.Delete(pedido);
-
-                var salvo = await _geralPersistence.SaveChangesAsync();
-
-                if (!salvo)
+                foreach (var item in pedido.Caminhoes)
                 {
-                     throw new ClienteNaoSalvoException(Mensagens.erroAoSalvarCliente);
+                    await _caminhaoService.DeletePedidoIdFromCaminhao(item.Id);
                 }
-
-                return salvo;
-            }
-            catch (SqlException)
-            {
-                throw new AcessoDeDadosException(Mensagens.erroDados);
-            }
-            catch (DbUpdateException)
-            {
-                throw new AcessoDeDadosException(Mensagens.erroDados);
+                return true;
+                //return await _geralPersistence.SaveChangesAsync();
             }
             catch (Exception ex)
             {

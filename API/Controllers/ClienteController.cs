@@ -52,7 +52,8 @@ namespace API.Controllers
             try
             {
                 var cliente = await _clienteService.GetClienteByIdAsync(id);
-
+                if (cliente == null) return NoContent();
+                
                 return Ok(cliente);
             }
             catch (ClienteNuloException ex) 
