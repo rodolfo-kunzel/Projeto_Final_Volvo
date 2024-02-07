@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Application;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace API.Controllers
 {
@@ -27,15 +28,26 @@ namespace API.Controllers
             try
             {
                 var caminhoes = await _caminhaoService.GetAllCaminhoesAsync();
-                if (caminhoes == null) return NoContent();
 
                 return Ok(caminhoes);
+            }
+            catch (CaminhoesNaoEncontradosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Messages.erroNaBuscaDeCaminhoes} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Messages.erroNaBuscaDeCaminhoes} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar recuperar caminhoes. Erro: {ex.Message}");
+                    $"{Messages.erroInesparo} Erro: {ex.Message}");
             }
         }
 

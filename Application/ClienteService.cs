@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application
@@ -26,7 +28,20 @@ namespace Application
             try
             {
                 var clientes = await _clientePersistence.GetAllClientesAsync();
+
+                if (clientes == null || clientes.Length == 0) {
+                    throw new ClientesNaoEncontradosException(Messages.listaClientesVazia);
+                }
+
                 return clientes;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -38,8 +53,18 @@ namespace Application
         {
             try
             {
-                var cliente = await _clientePersistence.GetClienteByIdAsync(Id);
+                var cliente = await _clientePersistence.GetClienteByIdAsync(Id)??
+                throw new ClienteNuloException(Messages.clienteNulo);
+
                 return cliente;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -51,14 +76,34 @@ namespace Application
         {
             try
             {
-                var cliente = await _clientePersistence.GetClienteByNumeroDocumentoAsync(model.NumeroDocumento);
-                if (cliente != null) throw new Exception("Numero de Documento já cadastrado!");
-                _geralPersistence.Add<Cliente>(model);
-                if (await _geralPersistence.SaveChangesAsync())
-                {
-                    return await _clientePersistence.GetClienteByIdAsync(model.Id);
+                var cliente = await _clientePersistence.GetClienteByNumeroDocumentoAsync(model.NumeroDocumento) ??
+                throw new ClienteNuloException(Messages.clienteNulo);
+                
+                if (cliente != null) {
+                    throw new ClienteRepetidoException(Messages.numeroDocumentoExistente);
                 }
-                return null;
+
+                _geralPersistence.Add<Cliente>(model);
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                    throw new ClienteNaoSalvoException(Messages.erroAoSalvarCliente);
+                }
+                
+                cliente = await _clientePersistence.GetClienteByIdAsync(model.Id)??
+                throw new ClienteNuloException(Messages.clienteNulo);
+
+                return cliente;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -70,17 +115,31 @@ namespace Application
         {
             try
             {
-                var cliente = await _clientePersistence.GetClienteByIdAsync(Id)
-                ?? throw new Exception("Cliente selecionada para update não encontrada!");
+                var cliente = await _clientePersistence.GetClienteByIdAsync(Id) ?? 
+                throw new ClienteNuloException(Messages.clienteNulo);
 
                 model.Id = cliente.Id;
                 _geralPersistence.Update<Cliente>(model);
-                if (await _geralPersistence.SaveChangesAsync())
-                {
-                    return await _clientePersistence.GetClienteByIdAsync(model.Id);
 
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                     throw new ClienteNaoSalvoException(Messages.erroAoSalvarCliente);
                 }
-                return null;
+
+                cliente = await _clientePersistence.GetClienteByIdAsync(model.Id)?? 
+                throw new ClienteNuloException(Messages.clienteNulo);;
+
+                return cliente;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -92,10 +151,27 @@ namespace Application
         {
             try
             {
-                var cliente = await _clientePersistence.GetClienteByIdAsync(Id)
-                ?? throw new Exception("Cliente selecionado para exclusão não encontrada!");
+                var cliente = await _clientePersistence.GetClienteByIdAsync(Id)?? 
+                throw new ClienteNuloException(Messages.clienteNulo);
+
                 _geralPersistence.Delete(cliente);
-                return await _geralPersistence.SaveChangesAsync();
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                     throw new ClienteNaoSalvoException(Messages.erroAoSalvarCliente);
+                }
+
+                return salvo;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {

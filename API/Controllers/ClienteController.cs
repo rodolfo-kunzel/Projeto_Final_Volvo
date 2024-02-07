@@ -13,10 +13,12 @@ namespace API.Controllers
     public class ClienteController : ControllerBase
     {
         private readonly ClienteService _clienteService;
+        private readonly ILogger<ClienteController> _logger;
 
-        public ClienteController(ClienteService clienteService)
+        public ClienteController(ClienteService clienteService, ILogger<ClienteController> logger)
         {
             _clienteService = clienteService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -25,14 +27,26 @@ namespace API.Controllers
             try
             {
                 var clientes = await _clienteService.GetAllClientesAsync();
-                if (clientes == null) return NoContent();
 
                 return Ok(clientes);
             }
+            catch (ClientesNaoEncontradosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Messages.erroNaBuscaDeClientes} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Messages.erroNaBuscaDeClientes} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar recuperar clientes. Erro: {ex.Message}");
+                    $"{Messages.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -42,14 +56,26 @@ namespace API.Controllers
             try
             {
                 var cliente = await _clienteService.GetClienteByIdAsync(id);
-                if (cliente == null) return NoContent();
 
                 return Ok(cliente);
             }
+            catch (ClienteNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Messages.clienteNulo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Messages.erroDados} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar recuperar cliente. Erro: {ex.Message}");
+                    $"{Messages.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -59,14 +85,32 @@ namespace API.Controllers
             try
             {
                 var cliente = await _clienteService.AddCliente(model);
-                if (cliente == null) return NoContent();
 
                 return Ok(cliente);
             }
+            catch (ClienteNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Messages.clienteNulo} Erro: {ex.Message}");
+            }
+            catch (ClienteRepetidoException ex)
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Messages.erroDados} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar adicionar a cliente. Erro: {ex.Message}");
+                    $"{Messages.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -80,10 +124,29 @@ namespace API.Controllers
 
                 return Ok(cliente);
             }
+            catch (ClienteNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Messages.clienteNulo} Erro: {ex.Message}");
+            }
+            catch (ClienteNaoSalvoException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Messages.erroAoSalvarCliente} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Messages.erroDados} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar atualizar a cliente. Erro: {ex.Message}");
+                    $"{Messages.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -96,13 +159,26 @@ namespace API.Controllers
                 if (cliente == null) return NoContent();
 
                 return (await _clienteService.DeleteCliente(cliente.Id)) ?
-                     Ok(new { message = "Cliente excluída com sucesso!" }) :
-                     throw new Exception("Ocorreu um problema não específico ao tentar excluir a cliente.");
+                     Ok(new { message = Messages.clienteRemovidoSucesso }) :
+                     throw new ClienteNaoSalvoException(Messages.clienteRemovidoErro);
+            }
+            catch (ClienteNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Messages.clienteNulo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Messages.erroDados} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar excluir a cliente. Erro: {ex.Message}");
+                    $"{Messages.erroInesparo} Erro: {ex.Message}");
             }
         }
     }

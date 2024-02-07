@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application
@@ -26,7 +28,20 @@ namespace Application
             try
             {
                 var caminhoes = await _caminhaoPersistence.GetAllCaminhoesAsync();
+
+                if (caminhoes == null || caminhoes.Length == 0) {
+                    throw new CaminhoesNaoEncontradosException(Messages.listaCaminhoesVazia);
+                }
+
                 return caminhoes;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -39,8 +54,13 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? 
-                throw new CaminhaoNuloOuVazioException();
+                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+                
                 return caminhao;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
             }
             catch (Exception ex)
             {
@@ -53,7 +73,7 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByNumeroChassiAsync(numeroChassi) ?? 
-                throw new CaminhaoNuloOuVazioException();
+                throw new CaminhaoNuloException(Messages.caminhaoNulo);
                 return caminhao;
             }
             catch (Exception ex)
@@ -67,7 +87,7 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByModeloAsync(modelo) ?? 
-                throw new CaminhaoNuloOuVazioException();
+                throw new CaminhaoNuloException(Messages.caminhaoNulo);
                 return caminhao;
             }
             catch (Exception ex)
@@ -94,16 +114,13 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByNumeroChassiAsync(model.NumeroChassi);
-                if (caminhao != null) throw new Exception();
+                if (caminhao != null) throw new Exception(Messages.numeroChassiExistente);
                 _geralPersistence.Add<Caminhao>(model);
                 if (await _geralPersistence.SaveChangesAsync())
                 {
 
-                    caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id);
-
-                    if (caminhao == null) {
-                    throw new CaminhaoNuloOuVazioException();
-                    }
+                    caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id) ??
+                    throw new CaminhaoNuloException(Messages.caminhaoNulo);;
 
                     return caminhao;
 
@@ -120,17 +137,17 @@ namespace Application
         {
             try
             {
-                var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? throw new CaminhaoNuloOuVazioException("Caminhao selecionado para update não encontrada!");
+                var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? 
+                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+
                 model.Id = caminhao.Id;
+
                 _geralPersistence.Update<Caminhao>(model);
+
                 if (await _geralPersistence.SaveChangesAsync())
                 {
-
-                    caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id);
-
-                    if (caminhao == null) {
-                    throw new CaminhaoNuloOuVazioException();
-                    }
+                    caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id)??
+                    throw new CaminhaoNuloException(Messages.caminhaoNulo);;
 
                     return caminhao;
 
@@ -148,7 +165,7 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? 
-                throw new CaminhaoNuloOuVazioException("Caminhao selecionado para exclusão não encontrada!");
+                throw new CaminhaoNuloException(Messages.caminhaoNulo);
                 _geralPersistence.Delete(caminhao);
                 return await _geralPersistence.SaveChangesAsync();
             }
