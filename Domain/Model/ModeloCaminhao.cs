@@ -31,6 +31,6 @@ namespace Domain
         [MaxLength(30)]
         public required string Eixo {get;set;}
 
-        public required ICollection<Caminhao> Caminhoes { get; set;}
+        public ICollection<Caminhao>? Caminhoes { get; set;}
     }
 }

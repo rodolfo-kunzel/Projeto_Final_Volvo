@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -160,6 +161,25 @@ namespace Application
             }
         }
 
+         public async Task<bool> UpdateCaminhaoPedido(int IdCaminhao, int idPedido)
+        {
+            try
+            {
+                var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(IdCaminhao, false, false, false)
+                ?? throw new Exception("Caminhao selecionado para update não encontrada!");
+
+                caminhao.PedidoId = idPedido;
+                _geralPersistence.Update<Caminhao>(caminhao);
+
+                //return await _geralPersistence.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<bool> DeleteCaminhao(int Id)
         {
             try
@@ -168,6 +188,60 @@ namespace Application
                 throw new CaminhaoNuloException(Messages.caminhaoNulo);
                 _geralPersistence.Delete(caminhao);
                 return await _geralPersistence.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+         public List<int> GetListofIds(string IDs)
+        {
+            try
+            {
+                // Padrão de expressão regular para encontrar números inteiros positivos
+                string pattern = @"\b\d+\b";
+
+                // Criar objeto Regex
+                Regex regex = new Regex(pattern);
+
+                // Lista para armazenar os números inteiros positivos
+                List<int> IdList = new List<int>();
+
+                // Encontrar correspondências
+                MatchCollection matches = regex.Matches(IDs);
+
+                // Iterar sobre as correspondências e adicionar os IDs à lista
+                foreach (Match match in matches)
+                {
+                    int number;
+                    if (int.TryParse(match.Value, out number))
+                    {
+                        IdList.Add(number);
+                    }
+                }
+                if (IdList == null) throw new Exception("Nenhum ID foi selecionado");
+
+                return IdList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> IdListIsValid(List<int> IDs)
+        {
+            try
+            {
+                foreach (int Id in IDs)
+                {
+                    var caminhao = await GetCaminhaoByIdAsync(Id);
+                    if (caminhao == null) throw new Exception("Caminhão selecionado inválido");
+                    if (caminhao.PedidoId != null)
+                        throw new Exception("O Caminhao de id " + Id +" já possui um pedido");
+                }
+                return true;
             }
             catch (Exception ex)
             {
