@@ -1,22 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
+namespace API.Controllers 
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ModeloCaminhaoController : ControllerBase
     {
         private readonly ModeloCaminhaoService _modeloCaminhaoService;
+        private readonly ILogger<ModeloCaminhaoService> _logger;
 
-        public ModeloCaminhaoController(ModeloCaminhaoService modeloCaminhaoService)
+        public ModeloCaminhaoController(ModeloCaminhaoService modeloCaminhaoService, ILogger<ModeloCaminhaoService> logger)
         {
             _modeloCaminhaoService = modeloCaminhaoService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -25,14 +23,26 @@ namespace API.Controllers
             try
             {
                 var modeloCaminhoes = await _modeloCaminhaoService.GetAllModeloCaminhoesAsync();
-                if (modeloCaminhoes == null) return NoContent();
 
                 return Ok(modeloCaminhoes);
             }
+            catch (ModelosCaminhoesNaoEncontradoException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroNaBuscaDeModelosCaminhoes} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeModelosCaminhoes} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar recuperar modeloCaminhoes. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -42,14 +52,26 @@ namespace API.Controllers
             try
             {
                 var modeloCaminhao = await _modeloCaminhaoService.GetModeloCaminhaoByIdAsync(id);
-                if (modeloCaminhao == null) return NoContent();
 
                 return Ok(modeloCaminhao);
             }
+            catch (ModeloCaminhaoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.modeloCaminhaoNulo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeModelosCaminhoes} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar recuperar modeloCaminhao. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -59,14 +81,26 @@ namespace API.Controllers
             try
             {
                 var modeloCaminhao = await _modeloCaminhaoService.AddModeloCaminhao(model);
-                if (modeloCaminhao == null) return NoContent();
 
                 return Ok(modeloCaminhao);
             }
+            catch (ModeloCaminhaoNuloException ex)
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.modeloCaminhaoNulo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeModelosCaminhoes} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar adicionar a modeloCaminhao. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -76,14 +110,26 @@ namespace API.Controllers
             try
             {
                 var modeloCaminhao = await _modeloCaminhaoService.UpdateModeloCaminhao(id, model);
-                if (modeloCaminhao == null) return NoContent();
 
                 return Ok(modeloCaminhao);
             }
+            catch (ModeloCaminhaoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.modeloCaminhaoNulo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeModelosCaminhoes} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar atualizar a modeloCaminhao. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -93,16 +139,34 @@ namespace API.Controllers
             try
             {
                 var modeloCaminhao = await _modeloCaminhaoService.GetModeloCaminhaoByIdAsync(id);
-                if (modeloCaminhao == null) return NoContent();
 
                 return (await _modeloCaminhaoService.DeleteModeloCaminhao(modeloCaminhao.Id)) ?
-                     Ok(new { message = "ModeloCaminhao excluída com sucesso!" }) :
-                     throw new Exception("Ocorreu um problema não específico ao tentar excluir a modeloCaminhao.");
+                     Ok(new { message = Mensagens.modeloCaminhaoRemovidoSucesso }) :
+                     throw new ModeloCaminhaoNaoPodeSerDeletadoException(Mensagens.modeloCaminhaoRemovidoErro);
+            }
+            catch (ModeloCaminhaoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.modeloCaminhaoNulo} Erro: {ex.Message}");
+            }
+            catch (ModeloCaminhaoNaoPodeSerDeletadoException ex)
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeModelosCaminhoes} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar excluir a modeloCaminhao. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
     }

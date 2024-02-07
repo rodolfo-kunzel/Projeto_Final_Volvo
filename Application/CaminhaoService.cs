@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Domain;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -31,19 +26,20 @@ namespace Application
                 var caminhoes = await _caminhaoPersistence.GetAllCaminhoesAsync();
 
                 if (caminhoes == null || caminhoes.Length == 0) {
-                    throw new CaminhoesNaoEncontradosException(Messages.listaCaminhoesVazia);
+                    throw new CaminhoesNaoEncontradosException(Mensagens.listaCaminhoesVazia);
                 }
 
                 return caminhoes;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
+            
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -55,13 +51,17 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? 
-                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
                 
                 return caminhao;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -74,8 +74,16 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByNumeroChassiAsync(numeroChassi) ?? 
-                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
                 return caminhao;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -88,8 +96,16 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByModeloAsync(modelo) ?? 
-                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
                 return caminhao;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -104,6 +120,14 @@ namespace Application
                 var caminhoes = await _caminhaoPersistence.GetCaminhaoByRangePriceAsync(minValue, maxValue);
                 return caminhoes;
             }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -115,18 +139,26 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByNumeroChassiAsync(model.NumeroChassi);
-                if (caminhao != null) throw new Exception(Messages.numeroChassiExistente);
+                if (caminhao != null) throw new Exception(Mensagens.numeroChassiExistente);
                 _geralPersistence.Add<Caminhao>(model);
                 if (await _geralPersistence.SaveChangesAsync())
                 {
 
                     caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id) ??
-                    throw new CaminhaoNuloException(Messages.caminhaoNulo);;
+                    throw new CaminhaoNuloException(Mensagens.caminhaoNulo);;
 
                     return caminhao;
 
                 }
                 return null;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -139,7 +171,7 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? 
-                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
 
                 model.Id = caminhao.Id;
 
@@ -148,12 +180,20 @@ namespace Application
                 if (await _geralPersistence.SaveChangesAsync())
                 {
                     caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id)??
-                    throw new CaminhaoNuloException(Messages.caminhaoNulo);;
+                    throw new CaminhaoNuloException(Mensagens.caminhaoNulo);;
 
                     return caminhao;
 
                 }
                 return null;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -174,6 +214,14 @@ namespace Application
                 //return await _geralPersistence.SaveChangesAsync();
                 return true;
             }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -185,9 +233,17 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? 
-                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
                 _geralPersistence.Delete(caminhao);
                 return await _geralPersistence.SaveChangesAsync();
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -224,6 +280,14 @@ namespace Application
 
                 return IdList;
             }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -242,6 +306,14 @@ namespace Application
                         throw new Exception("O Caminhao de id " + Id +" já possui um pedido");
                 }
                 return true;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {

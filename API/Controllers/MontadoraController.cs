@@ -13,10 +13,12 @@ namespace API.Controllers
     public class MontadoraController : ControllerBase
     {
         private readonly MontadoraService _montadoraService;
+        private readonly ILogger<MontadoraController> _logger;
 
-        public MontadoraController(MontadoraService montadoraService)
+        public MontadoraController(MontadoraService montadoraService, ILogger<MontadoraController> logger)
         {
             _montadoraService = montadoraService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -25,14 +27,26 @@ namespace API.Controllers
             try
             {
                 var montadoras = await _montadoraService.GetAllMontadorasAsync();
-                if (montadoras == null) return NoContent();
 
                 return Ok(montadoras);
             }
+            catch (MontadorasNaoEncontradasException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroNaBuscaDeMontadora} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeMontadora} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar recuperar montadoras. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -42,14 +56,26 @@ namespace API.Controllers
             try
             {
                 var montadora = await _montadoraService.GetMontadoraByIdAsync(id);
-                if (montadora == null) return NoContent();
 
                 return Ok(montadora);
             }
+            catch (MontadoraNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroNaBuscaDeMontadora} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeMontadora} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar recuperar montadora. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -59,14 +85,32 @@ namespace API.Controllers
             try
             {
                 var montadora = await _montadoraService.AddMontadora(model);
-                if (montadora == null) return NoContent();
 
                 return Ok(montadora);
             }
+            catch (MontadoraNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroNaBuscaDeMontadora} Erro: {ex.Message}");
+            }
+            catch (MontadoraRepetidaException ex)
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeMontadora} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar adicionar a montadora. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -76,14 +120,26 @@ namespace API.Controllers
             try
             {
                 var montadora = await _montadoraService.UpdateMontadora(id, model);
-                if (montadora == null) return NoContent();
 
                 return Ok(montadora);
             }
+            catch (MontadoraNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroNaBuscaDeMontadora} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex)
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroNaBuscaDeMontadora} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar atualizar a montadora. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -93,16 +149,34 @@ namespace API.Controllers
             try
             {
                 var montadora = await _montadoraService.GetMontadoraByIdAsync(id);
-                if (montadora == null) return NoContent();
 
                 return (await _montadoraService.DeleteMontadora(montadora.Id)) ?
-                     Ok(new { message = "Montadora excluída com sucesso!" }) :
-                     throw new Exception("Ocorreu um problema não específico ao tentar excluir a montadora.");
+                     Ok(new { message = Mensagens.montadoraRemovidoSucesso }) :
+                     throw new Exception(Mensagens.montadoraRemovidaErro);
+            }
+            catch (MontadoraNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.montadoraNulo} Erro: {ex.Message}");
+            }
+            catch (MontadoraNaoPodeSerDeletadaException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar excluir a montadora. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
     }
