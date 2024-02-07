@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Domain;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application
@@ -26,7 +23,20 @@ namespace Application
             try
             {
                 var montadoras = await _montadoraPersistence.GetAllMontadorasAsync();
+
+                if (montadoras == null || montadoras.Length == 0) {
+                    throw new MontadorasNaoEncontradasException(Mensagens.listaModelosCaminhoesVazia);
+                }
+
                 return montadoras;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -38,8 +48,18 @@ namespace Application
         {
             try
             {
-                var montadora = await _montadoraPersistence.GetMontadoraByIdAsync(Id);
+                var montadora = await _montadoraPersistence.GetMontadoraByIdAsync(Id) ?? 
+                throw new MontadoraNuloException(Mensagens.modeloCaminhaoNulo);
+
                 return montadora;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -52,13 +72,32 @@ namespace Application
             try
             {
                 var montadora = await _montadoraPersistence.GetMontadoraByCNPJAsync(model.CNPJ);
-                if (montadora != null) throw new Exception("CNPJ já cadastrado!");
-                _geralPersistence.Add<Montadora>(model);
-                if (await _geralPersistence.SaveChangesAsync())
+                if (montadora != null)
                 {
-                    return await _montadoraPersistence.GetMontadoraByIdAsync(model.Id);
+                    throw new MontadoraRepetidaException(Mensagens.CNPJExistente);
+                } 
+
+                _geralPersistence.Add<Montadora>(model);
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                    throw new MontadoraNaoSalvaException(Mensagens.erroAoSalvarMontadora);
                 }
-                return null;
+
+                montadora = await _montadoraPersistence.GetMontadoraByIdAsync(model.Id) ?? 
+                throw new MontadoraNuloException(Mensagens.modeloCaminhaoNulo);
+
+                return montadora;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -70,17 +109,23 @@ namespace Application
         {
             try
             {
-                var montadora = await _montadoraPersistence.GetMontadoraByIdAsync(Id)
-                ?? throw new Exception("Montadora selecionada para update não encontrada!");
+                var montadora = await _montadoraPersistence.GetMontadoraByIdAsync(Id) ?? 
+                throw new MontadoraNuloException(Mensagens.modeloCaminhaoNulo);
 
                 model.Id = montadora.Id;
                 _geralPersistence.Update<Montadora>(model);
-                if (await _geralPersistence.SaveChangesAsync())
-                {
-                    return await _montadoraPersistence.GetMontadoraByIdAsync(model.Id);
 
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                    throw new MontadoraNaoSalvaException(Mensagens.erroAoSalvarMontadora);
                 }
-                return null;
+
+                montadora = await _montadoraPersistence.GetMontadoraByIdAsync(model.Id) ?? 
+                throw new MontadoraNuloException(Mensagens.modeloCaminhaoNulo);
+
+                return montadora;
             }
             catch (Exception ex)
             {
@@ -92,10 +137,19 @@ namespace Application
         {
             try
             {
-                var montadora = await _montadoraPersistence.GetMontadoraByIdAsync(Id)
-                ?? throw new Exception("Montadora selecionada para exclusão não encontrada!");
+                var montadora = await _montadoraPersistence.GetMontadoraByIdAsync(Id)?? 
+                throw new MontadoraNuloException(Mensagens.modeloCaminhaoNulo);
+
                 _geralPersistence.Delete(montadora);
-                return await _geralPersistence.SaveChangesAsync();
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                     throw new MontadoraNaoSalvaException(Mensagens.erroAoSalvarMontadora);
+                }
+
+                return salvo;
             }
             catch (Exception ex)
             {

@@ -30,18 +30,18 @@ namespace Application
                 var clientes = await _clientePersistence.GetAllClientesAsync();
 
                 if (clientes == null || clientes.Length == 0) {
-                    throw new ClientesNaoEncontradosException(Messages.listaClientesVazia);
+                    throw new ClientesNaoEncontradosException(Mensagens.listaClientesVazia);
                 }
 
                 return clientes;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -54,17 +54,17 @@ namespace Application
             try
             {
                 var cliente = await _clientePersistence.GetClienteByIdAsync(Id)??
-                throw new ClienteNuloException(Messages.clienteNulo);
+                throw new ClienteNuloException(Mensagens.clienteNulo);
 
                 return cliente;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -77,10 +77,10 @@ namespace Application
             try
             {
                 var cliente = await _clientePersistence.GetClienteByNumeroDocumentoAsync(model.NumeroDocumento) ??
-                throw new ClienteNuloException(Messages.clienteNulo);
+                throw new ClienteNuloException(Mensagens.clienteNulo);
                 
                 if (cliente != null) {
-                    throw new ClienteRepetidoException(Messages.numeroDocumentoExistente);
+                    throw new ClienteRepetidoException(Mensagens.numeroDocumentoExistente);
                 }
 
                 _geralPersistence.Add<Cliente>(model);
@@ -89,21 +89,21 @@ namespace Application
 
                 if (!salvo)
                 {
-                    throw new ClienteNaoSalvoException(Messages.erroAoSalvarCliente);
+                    throw new ClienteNaoSalvoException(Mensagens.erroAoSalvarCliente);
                 }
                 
                 cliente = await _clientePersistence.GetClienteByIdAsync(model.Id)??
-                throw new ClienteNuloException(Messages.clienteNulo);
+                throw new ClienteNuloException(Mensagens.clienteNulo);
 
                 return cliente;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -116,7 +116,7 @@ namespace Application
             try
             {
                 var cliente = await _clientePersistence.GetClienteByIdAsync(Id) ?? 
-                throw new ClienteNuloException(Messages.clienteNulo);
+                throw new ClienteNuloException(Mensagens.clienteNulo);
 
                 model.Id = cliente.Id;
                 _geralPersistence.Update<Cliente>(model);
@@ -125,21 +125,21 @@ namespace Application
 
                 if (!salvo)
                 {
-                     throw new ClienteNaoSalvoException(Messages.erroAoSalvarCliente);
+                     throw new ClienteNaoSalvoException(Mensagens.erroAoSalvarCliente);
                 }
 
                 cliente = await _clientePersistence.GetClienteByIdAsync(model.Id)?? 
-                throw new ClienteNuloException(Messages.clienteNulo);;
+                throw new ClienteNuloException(Mensagens.clienteNulo);;
 
                 return cliente;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -151,8 +151,8 @@ namespace Application
         {
             try
             {
-                var cliente = await _clientePersistence.GetClienteByIdAsync(Id)?? 
-                throw new ClienteNuloException(Messages.clienteNulo);
+                var cliente = await _clientePersistence.GetClienteByIdAsync(Id) ?? 
+                throw new ClienteNuloException(Mensagens.clienteNulo);
 
                 _geralPersistence.Delete(cliente);
 
@@ -160,18 +160,18 @@ namespace Application
 
                 if (!salvo)
                 {
-                     throw new ClienteNaoSalvoException(Messages.erroAoSalvarCliente);
+                     throw new ClienteNaoSalvoException(Mensagens.erroAoSalvarCliente);
                 }
 
                 return salvo;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {

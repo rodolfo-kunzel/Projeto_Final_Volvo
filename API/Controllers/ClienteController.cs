@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -34,19 +30,19 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Messages.erroNaBuscaDeClientes} Erro: {ex.Message}");
+                    $"{Mensagens.erroNaBuscaDeClientes} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex) 
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroNaBuscaDeClientes} Erro: {ex.Message}");
+                    $"{Mensagens.erroNaBuscaDeClientes} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -63,19 +59,19 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Messages.clienteNulo} Erro: {ex.Message}");
+                    $"{Mensagens.clienteNulo} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex) 
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroDados} Erro: {ex.Message}");
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -92,25 +88,25 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Messages.clienteNulo} Erro: {ex.Message}");
+                    $"{Mensagens.clienteNulo} Erro: {ex.Message}");
             }
             catch (ClienteRepetidoException ex)
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroDados} Erro: {ex.Message}");
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex) 
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -128,25 +124,25 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Messages.clienteNulo} Erro: {ex.Message}");
+                    $"{Mensagens.clienteNulo} Erro: {ex.Message}");
             }
             catch (ClienteNaoSalvoException ex) 
-            {
+            { 
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroAoSalvarCliente} Erro: {ex.Message}");
+                    $"{Mensagens.erroAoSalvarCliente} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex) 
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroDados} Erro: {ex.Message}");
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -154,31 +150,36 @@ namespace API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             try
-            {
+            { 
                 var cliente = await _clienteService.GetClienteByIdAsync(id);
-                if (cliente == null) return NoContent();
 
                 return (await _clienteService.DeleteCliente(cliente.Id)) ?
-                     Ok(new { message = Messages.clienteRemovidoSucesso }) :
-                     throw new ClienteNaoSalvoException(Messages.clienteRemovidoErro);
+                     Ok(new { message = Mensagens.clienteRemovidoSucesso }) :
+                     throw new ClienteNaoPodeSerDeletadoException(Mensagens.clienteRemovidoErro);
             }
             catch (ClienteNuloException ex) 
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Messages.clienteNulo} Erro: {ex.Message}");
+                    $"{Mensagens.clienteNulo} Erro: {ex.Message}");
+            }
+            catch (ClienteNaoPodeSerDeletadoException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex) 
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroDados} Erro: {ex.Message}");
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
     }
