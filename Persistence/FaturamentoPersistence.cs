@@ -20,6 +20,8 @@ namespace Persistence
         public async Task<Faturamento?> GetFaturaByIdAsync(int id)
         {
             IQueryable<Faturamento> query = _context.Faturamento
+                                        .Include(f => f.Concessionaria)
+                                        .Include(f => f.Montadora)
                                         .Include(f => f.Pedidos);
 
             query = query
@@ -32,6 +34,8 @@ namespace Persistence
         public async Task<Faturamento[]> GetFaturaByConcessionariaIdAsync(int idConcessionaria)
         {
             IQueryable<Faturamento> query = _context.Faturamento
+                                        .Include(f => f.Montadora)
+                                        .Include(f => f.Concessionaria)
                                         .Include(f => f.Pedidos);
 
             query = query

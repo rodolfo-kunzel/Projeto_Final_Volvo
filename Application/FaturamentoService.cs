@@ -53,6 +53,7 @@ namespace Application
             try
             {
                 Faturamento? model = CreateModel(idConcessionaria, valorFatura);
+                if (model == null) throw new Exception("Não foi possivel criar o modelo");
 
                 _geralPersistence.Add<Faturamento>(model);
 

@@ -74,8 +74,9 @@ namespace API.Controllers
                 double faturamentoTotal = 0;
                 foreach (var item in await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria))
                 {
-                    faturamentoTotal = +item.Valor;
+                    faturamentoTotal += item.Valor;
                 }
+                //return Ok(await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria));
 
                 var fatura = await _faturamentoService.AddFatura(idConcessionaria, faturamentoTotal);
                 if (fatura == null) return NoContent();
