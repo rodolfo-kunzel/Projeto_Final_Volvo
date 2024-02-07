@@ -13,6 +13,7 @@ namespace Domain
 
         [Required]
         [MaxLength(100)]
+        [EmailAddress]
         public required string Email { get; set; }
 
         [Required]

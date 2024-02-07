@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,6 +9,7 @@ namespace Domain
         public int Id { get;set; }
 
         [Required]
+        [DefaultValue(0)]
         public double ValorFatura { get;set; }
 
         public int ConcessionariaId { get; set; }
