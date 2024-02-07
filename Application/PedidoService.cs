@@ -76,7 +76,7 @@ namespace Application
             }
         }
 
-        public async Task<Pedido?> AddPedido(Pedido model)
+        public async Task<Pedido> AddPedido(Pedido model, string ids)
         {
             try
             {
