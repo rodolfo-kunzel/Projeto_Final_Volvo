@@ -48,7 +48,8 @@ namespace Persistence.ContextDB
                     .WithOne(c => c.Concessionaria)
                     .OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(cc => cc.Faturamento)
-                    .WithOne(f => f.Concessionaria);
+                    .WithOne(f => f.Concessionaria)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<ModeloCaminhao>(entity =>
@@ -65,7 +66,8 @@ namespace Persistence.ContextDB
                     .WithOne(c => c.Montadora)
                     .OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(mt => mt.Faturamento)
-                    .WithOne(f => f.Montadora);
+                    .WithOne(f => f.Montadora)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             modelBuilder.Entity<Faturamento>(entity =>
@@ -73,12 +75,12 @@ namespace Persistence.ContextDB
                 entity.HasOne(f => f.Concessionaria)
                     .WithOne(cc => cc.Faturamento)
                     .HasForeignKey<Faturamento>(f => f.ConcessionariaId)
-                    .IsRequired(false);
+                    .OnDelete(DeleteBehavior.ClientSetNull);
                 entity.HasOne(f => f.Montadora)
                     .WithOne(mt => mt.Faturamento)
                     .HasForeignKey<Faturamento>(f => f.MontadoraId)
-                    .IsRequired(false);
-
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+                entity.HasMany(f => f.Pedidos);
             });
         }
     }

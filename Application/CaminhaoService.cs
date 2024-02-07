@@ -69,6 +69,24 @@ namespace Application
             }
         }
 
+        public async Task<Caminhao[]> GetSoldCaminhaoByConcessionariaIdAsync(int idConcessionaria)
+        {
+            try
+            {
+                var caminhoes = await _caminhaoPersistence.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria);
+
+                return caminhoes;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Messages.erroDados);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Caminhao> GetCaminhaoByNumeroChassiAsync(string numeroChassi)
         {
             try

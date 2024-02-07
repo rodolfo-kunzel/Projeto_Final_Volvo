@@ -50,6 +50,19 @@ namespace Application
             }
         }
 
+        public async Task<Pedido?> GetPedidoByConcessionariaIdAsync(int Id)
+        {
+            try
+            {
+                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id);
+                return pedido;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<Pedido?> GetPedidoByDateAsync(DateTime date)
         {
             try

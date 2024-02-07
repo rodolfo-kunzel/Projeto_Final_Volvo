@@ -79,7 +79,7 @@ namespace Persistence.Migrations
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Telefone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     EnderecoId = table.Column<int>(type: "int", nullable: false),
-                    FaturamentoId = table.Column<int>(type: "int", nullable: false)
+                    FaturamentoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -116,35 +116,15 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pedidos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DataAbertura = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DataEntrega = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StatusPedido = table.Column<int>(type: "int", nullable: false),
-                    ClienteId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pedidos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Pedidos_Clientes_ClienteId",
-                        column: x => x.ClienteId,
-                        principalTable: "Clientes",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Faturamento",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    DataFatura = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ValorFatura = table.Column<double>(type: "float", nullable: false),
                     ConcessionariaId = table.Column<int>(type: "int", nullable: false),
-                    MontadoraId = table.Column<int>(type: "int", nullable: true)
+                    MontadoraId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -158,6 +138,33 @@ namespace Persistence.Migrations
                         name: "FK_Faturamento_Montadoras_MontadoraId",
                         column: x => x.MontadoraId,
                         principalTable: "Montadoras",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Pedidos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DataAbertura = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataEntrega = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusPedido = table.Column<int>(type: "int", nullable: false),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    FaturamentoId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pedidos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pedidos_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Pedidos_Faturamento_FaturamentoId",
+                        column: x => x.FaturamentoId,
+                        principalTable: "Faturamento",
                         principalColumn: "Id");
                 });
 
@@ -258,8 +265,7 @@ namespace Persistence.Migrations
                 name: "IX_Faturamento_MontadoraId",
                 table: "Faturamento",
                 column: "MontadoraId",
-                unique: true,
-                filter: "[MontadoraId] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Montadoras_CNPJ",
@@ -276,6 +282,11 @@ namespace Persistence.Migrations
                 name: "IX_Pedidos_ClienteId",
                 table: "Pedidos",
                 column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pedidos_FaturamentoId",
+                table: "Pedidos",
+                column: "FaturamentoId");
         }
 
         /// <inheritdoc />
@@ -285,22 +296,22 @@ namespace Persistence.Migrations
                 name: "Caminhoes");
 
             migrationBuilder.DropTable(
-                name: "Faturamento");
-
-            migrationBuilder.DropTable(
                 name: "ModeloCaminhoes");
 
             migrationBuilder.DropTable(
                 name: "Pedidos");
 
             migrationBuilder.DropTable(
+                name: "Clientes");
+
+            migrationBuilder.DropTable(
+                name: "Faturamento");
+
+            migrationBuilder.DropTable(
                 name: "Concessionarias");
 
             migrationBuilder.DropTable(
                 name: "Montadoras");
-
-            migrationBuilder.DropTable(
-                name: "Clientes");
 
             migrationBuilder.DropTable(
                 name: "Enderecos");

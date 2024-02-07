@@ -12,7 +12,7 @@ using Persistence.ContextDB;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ProjetoFinalDBContext))]
-    [Migration("20240207031950_Initial")]
+    [Migration("20240207174956_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -136,7 +136,7 @@ namespace Persistence.Migrations
                     b.Property<int>("EnderecoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FaturamentoId")
+                    b.Property<int?>("FaturamentoId")
                         .HasColumnType("int");
 
                     b.Property<string>("Telefone")
@@ -200,7 +200,10 @@ namespace Persistence.Migrations
                     b.Property<int>("ConcessionariaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MontadoraId")
+                    b.Property<DateTime>("DataFatura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MontadoraId")
                         .HasColumnType("int");
 
                     b.Property<double>("ValorFatura")
@@ -212,8 +215,7 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.HasIndex("MontadoraId")
-                        .IsUnique()
-                        .HasFilter("[MontadoraId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Faturamento");
                 });
@@ -315,12 +317,17 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("DataEntrega")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("FaturamentoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("StatusPedido")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("FaturamentoId");
 
                     b.ToTable("Pedidos");
                 });
@@ -381,11 +388,13 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Concessionaria", "Concessionaria")
                         .WithOne("Faturamento")
-                        .HasForeignKey("Domain.Faturamento", "ConcessionariaId");
+                        .HasForeignKey("Domain.Faturamento", "ConcessionariaId")
+                        .IsRequired();
 
                     b.HasOne("Domain.Montadora", "Montadora")
                         .WithOne("Faturamento")
-                        .HasForeignKey("Domain.Faturamento", "MontadoraId");
+                        .HasForeignKey("Domain.Faturamento", "MontadoraId")
+                        .IsRequired();
 
                     b.Navigation("Concessionaria");
 
@@ -410,6 +419,10 @@ namespace Persistence.Migrations
                         .HasForeignKey("ClienteId")
                         .IsRequired();
 
+                    b.HasOne("Domain.Faturamento", null)
+                        .WithMany("Pedidos")
+                        .HasForeignKey("FaturamentoId");
+
                     b.Navigation("Cliente");
                 });
 
@@ -425,6 +438,11 @@ namespace Persistence.Migrations
                     b.Navigation("Faturamento");
                 });
 
+            modelBuilder.Entity("Domain.Faturamento", b =>
+                {
+                    b.Navigation("Pedidos");
+                });
+
             modelBuilder.Entity("Domain.ModeloCaminhao", b =>
                 {
                     b.Navigation("Caminhoes");
@@ -434,8 +452,7 @@ namespace Persistence.Migrations
                 {
                     b.Navigation("Caminhoes");
 
-                    b.Navigation("Faturamento")
-                        .IsRequired();
+                    b.Navigation("Faturamento");
                 });
 
             modelBuilder.Entity("Domain.Pedido", b =>
