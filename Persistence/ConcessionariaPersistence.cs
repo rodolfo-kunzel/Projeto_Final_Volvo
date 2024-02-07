@@ -25,7 +25,7 @@ namespace Persistence
                             .Include(c => c.Faturamento);
 
             query = query
-                .OrderBy(m => m.Id);
+                .OrderBy(c => c.Id);
 
             return await query.ToArrayAsync();
         }

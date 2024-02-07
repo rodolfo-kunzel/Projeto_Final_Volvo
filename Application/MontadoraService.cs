@@ -34,7 +34,7 @@ namespace Application
             }
         }
 
-        public async Task<Montadora> GetMontadoraByIdAsync(int Id)
+        public async Task<Montadora?> GetMontadoraByIdAsync(int Id)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Application
             }
         }
 
-        public async Task<Montadora> AddMontadora(Montadora model)
+        public async Task<Montadora?> AddMontadora(Montadora model)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace Application
             }
         }
 
-        public async Task<Montadora> UpdateMontadora(int Id, Montadora model)
+        public async Task<Montadora?> UpdateMontadora(int Id, Montadora model)
         {
             try
             {

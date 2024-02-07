@@ -9,6 +9,7 @@ namespace Domain
         public int Id {get;set;}
 
         [Required]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{YYYY/MM/DD:0}")]
         public DateTime DataAbertura {get;set;} = DateTime.Now;
         [DefaultValue(null)]
         public DateTime? DataEntrega {get;set;}

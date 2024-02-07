@@ -31,8 +31,8 @@ namespace Persistence
             IQueryable<ModeloCaminhao> query = _context.ModeloCaminhoes;
 
             query = query
-                .OrderBy(c => c.Id)
-                .Where(c => c.Id == id);
+                .OrderBy(m => m.Id)
+                .Where(m => m.Id == id);
 
             return await query.FirstOrDefaultAsync();
         }
