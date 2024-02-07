@@ -25,18 +25,18 @@ namespace Application
                 var concessionarias = await _concessionariaPersistence.GetAllConcessionariasAsync();
 
                 if (concessionarias == null || concessionarias.Length == 0) {
-                    throw new ConcessionariasNaoEncontradasException(Messages.listaConcessionariasVazia);
+                    throw new ConcessionariasNaoEncontradasException(Mensagens.listaConcessionariasVazia);
                 }
                 
                 return concessionarias;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -49,17 +49,17 @@ namespace Application
             try
             {
                 var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id)??
-                throw new ConcessionariaNuloException(Messages.concessionariaNula);
+                throw new ConcessionariaNuloException(Mensagens.concessionariaNula);
 
                 return concessionaria;
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -98,7 +98,7 @@ namespace Application
                 var concessionaria = await _concessionariaPersistence.GetConcessionariaByCNPJAsync(model.CNPJ);
 
                 if (concessionaria != null){
-                    throw new ConcessionariaRepetidaException(Messages.CNPJExistente);
+                    throw new ConcessionariaRepetidaException(Mensagens.CNPJExistente);
                 } 
 
                 _geralPersistence.Add<Concessionaria>(model);
@@ -107,7 +107,7 @@ namespace Application
 
                 if (!salvo)
                 {
-                    throw new ConcessionariaNaoSalvaException(Messages.erroAoSalvarConcessionaria);
+                    throw new ConcessionariaNaoSalvaException(Mensagens.erroAoSalvarConcessionaria);
                 }
 
                 concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(model.Id);
@@ -116,11 +116,11 @@ namespace Application
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -133,7 +133,7 @@ namespace Application
             try
             {
                 var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id) ??
-                throw new ConcessionariaNuloException(Messages.concessionariaNula);
+                throw new ConcessionariaNuloException(Mensagens.concessionariaNula);
 
                 model.Id = concessionaria.Id;
 
@@ -143,7 +143,7 @@ namespace Application
 
                 if (!salvo)
                 {
-                    throw new ConcessionariaNaoSalvaException(Messages.erroAoSalvarConcessionaria);
+                    throw new ConcessionariaNaoSalvaException(Mensagens.erroAoSalvarConcessionaria);
                 }
 
                 concessionaria =  await _concessionariaPersistence.GetConcessionariaByIdAsync(model.Id);
@@ -152,11 +152,11 @@ namespace Application
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -169,7 +169,7 @@ namespace Application
             try
             {
                 var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id)??
-                throw new ConcessionariaNuloException(Messages.concessionariaNula);
+                throw new ConcessionariaNuloException(Mensagens.concessionariaNula);
 
                 _geralPersistence.Delete(concessionaria);
 
@@ -177,17 +177,17 @@ namespace Application
 
                 if (!salvo)
                 {
-                     throw new ConcessionariaNaoSalvaException(Messages.erroAoSalvarConcessionaria);
+                     throw new ConcessionariaNaoSalvaException(Mensagens.erroAoSalvarConcessionaria);
                 }
                 return await _geralPersistence.SaveChangesAsync();
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (DbUpdateException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {

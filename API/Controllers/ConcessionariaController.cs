@@ -47,7 +47,7 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                    $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
             }
         }
 
@@ -72,12 +72,13 @@ namespace API.Controllers
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                    $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                    $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
             }
         }
 
@@ -119,7 +120,7 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -143,6 +144,7 @@ namespace API.Controllers
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
                    $"{Messages.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+
             }
             catch (AcessoDeDadosException ex)
             {
@@ -154,7 +156,7 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                    $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
             }
         }
 
@@ -166,32 +168,40 @@ namespace API.Controllers
                 var concessionaria = await _concessionariaService.GetConcessionariaByIdAsync(id);
 
                 return (await _concessionariaService.DeleteConcessionaria(concessionaria.Id)) ?
-                     Ok(new { message = Messages.concessionariaRemovidoSucesso }) :
-                     throw new ConcessionariaNaoSalvaException(Messages.concessionariaRemovidoSucesso);
+                     Ok(new { message = Mensagens.concessionariaRemovidoSucesso }) :
+                     throw new ConcessionariaNaoPodeSerDeletadaException(Mensagens.concessionariaRemovidoSucesso);
             }
             catch (ConcessionariaNuloException ex)
             {
                 _logger.LogError(ex.Message);
-                return StatusCode(StatusCodes.Status404NotFound,
-                   $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
+            }
+            catch (ConcessionariaNaoPodeSerDeletadaException ex)
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
             }
             catch (ConcessionariaNaoSalvaException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
                    $"{Messages.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+
             }
             catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
                    $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
     }

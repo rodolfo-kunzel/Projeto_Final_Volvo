@@ -35,19 +35,19 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Messages.erroNaBuscaDeCaminhoes} Erro: {ex.Message}");
+                    $"{Mensagens.erroNaBuscaDeCaminhoes} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex) 
             {
                 _logger.LogError(ex.Message);
                  return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroNaBuscaDeCaminhoes} Erro: {ex.Message}");
+                    $"{Mensagens.erroNaBuscaDeCaminhoes} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.erroInesparo} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -57,15 +57,32 @@ namespace API.Controllers
             try
             {
                 var caminhao = await _caminhaoService.GetCaminhaoByIdAsync(id);
-                if (caminhao == null) return NoContent();
 
                 return Ok(caminhao);
+            }
+            catch (CaminhaoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.caminhaoNulo} Erro: {ex.Message}");
+            }
+            catch (CaminhaoRepetidoException ex)
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar recuperar caminhoes. Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -75,15 +92,32 @@ namespace API.Controllers
             try
             {
                 var caminhao = await _caminhaoService.AddCaminhao(model);
-                if (caminhao == null) return NoContent();
 
                 return Ok(caminhao);
+            }
+            catch (CaminhaoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.clienteNulo} Erro: {ex.Message}");
+            }
+            catch (CaminhaoNaoSalvoException ex) 
+            { 
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroAoSalvarCaminhao} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar adicionar a caminhao. Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -93,15 +127,32 @@ namespace API.Controllers
             try
             {
                 var caminhao = await _caminhaoService.UpdateCaminhao(id, model);
-                if (caminhao == null) return NoContent();
 
                 return Ok(caminhao);
+            }
+            catch (CaminhaoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.clienteNulo} Erro: {ex.Message}");
+            }
+            catch (CaminhaoNaoSalvoException ex) 
+            { 
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroAoSalvarCaminhao} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar atualizar o caminhao. Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -114,14 +165,32 @@ namespace API.Controllers
                 if (caminhao == null) return NoContent();
 
                 return await _caminhaoService.DeleteCaminhao(caminhao.Id) ?
-                     Ok(new { message = "Caminhao excluído com sucesso!" }) :
-                     throw new Exception("Ocorreu um problema não específico ao tentar excluir o caminhao.");
+                     Ok(new { message = Mensagens.caminhaoRemovidoSucesso }) :
+                     throw new CaminhaoNaoPodeSerDeletadoException(Mensagens.caminhaoRemovidoErro);
+            }
+            catch (CaminhaoNaoPodeSerDeletadoException ex)
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.clienteNulo} Erro: {ex.Message}");
+            }
+            catch (CaminhaoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar excluir o caminhão. Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
     }

@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Domain;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application
@@ -29,7 +26,20 @@ namespace Application
             try
             {
                 var pedidos = await _pedidoPersistence.GetAllPedidosAsync();
+
+                if (pedidos == null || pedidos.Length == 0) {
+                    throw new PedidosNaoEncontradosException(Mensagens.listaPedidosVazia);
+                }
+
                 return pedidos;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -37,12 +47,22 @@ namespace Application
             }
         }
 
-        public async Task<Pedido?> GetPedidoByIdAsync(int Id)
+        public async Task<Pedido> GetPedidoByIdAsync(int Id)
         {
             try
             {
-                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id);
+                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id) ??
+                throw new PedidoNuloException(Mensagens.pedidoNulo);
+
                 return pedido;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -67,8 +87,18 @@ namespace Application
         {
             try
             {
-                var pedido = await _pedidoPersistence.GetPedidoByDateAsync(date);
+                var pedido = await _pedidoPersistence.GetPedidoByDateAsync(date) ??
+                throw new PedidoNuloException(Mensagens.pedidoNulo);
+
                 return pedido;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -81,7 +111,20 @@ namespace Application
             try
             {
                 var pedidos = await _pedidoPersistence.GetPedidoByDateRangeAsync(minDate, maxDate);
+
+                if (pedidos == null || pedidos.Length == 0) {
+                    throw new PedidosNaoEncontradosException(Mensagens.listaPedidosVazia);
+                }
+
                 return pedidos;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -108,7 +151,19 @@ namespace Application
                         return await _pedidoPersistence.GetPedidoByIdAsync(model.Id);
                     }
                 }
-                return null;
+
+                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(model.Id) ??
+                throw new PedidoNuloException(Mensagens.pedidoNulo);
+
+                return pedido;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -120,8 +175,8 @@ namespace Application
         {
             try
             {
-                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id)
-                ?? throw new Exception("Pedido selecionada para update não encontrada!");
+                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id) ??
+                throw new PedidoNuloException(Mensagens.pedidoNulo);
 
                 model.Id = pedido.Id;
 
@@ -139,12 +194,26 @@ namespace Application
                 }
 
                 _geralPersistence.Update<Pedido>(model);
-                if (await _geralPersistence.SaveChangesAsync())
-                {
-                    return await _pedidoPersistence.GetPedidoByIdAsync(model.Id);
 
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                     throw new PedidoNaoSalvoException(Mensagens.erroAoSalvarPedido);
                 }
-                return null;
+
+                pedido = await _pedidoPersistence.GetPedidoByIdAsync(model.Id) ??
+                throw new PedidoNuloException(Mensagens.pedidoNulo);
+
+                return pedido;
+            }
+            catch (SqlException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
+            }
+            catch (DbUpdateException)
+            {
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
