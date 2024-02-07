@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.ContextDB;
 
@@ -11,9 +12,11 @@ using Persistence.ContextDB;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ProjetoFinalDBContext))]
-    partial class ProjetoFinalDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240206230817_AlterTable")]
+    partial class AlterTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

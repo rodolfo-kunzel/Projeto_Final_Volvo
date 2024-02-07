@@ -12,7 +12,7 @@ using Persistence.ContextDB;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ProjetoFinalDBContext))]
-    [Migration("20240205211934_Initial")]
+    [Migration("20240206225033_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -304,7 +304,7 @@ namespace Persistence.Migrations
                         .HasForeignKey("MontadoraId")
                         .IsRequired();
 
-                    b.HasOne("Domain.Pedido", null)
+                    b.HasOne("Domain.Pedido", "Pedido")
                         .WithMany("Caminhoes")
                         .HasForeignKey("PedidoId");
 
@@ -313,6 +313,8 @@ namespace Persistence.Migrations
                     b.Navigation("Modelo");
 
                     b.Navigation("Montadora");
+
+                    b.Navigation("Pedido");
                 });
 
             modelBuilder.Entity("Domain.Cliente", b =>

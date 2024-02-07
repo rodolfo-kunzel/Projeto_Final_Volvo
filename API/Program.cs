@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Application;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp;
@@ -21,7 +22,10 @@ var logger = new LoggerConfiguration()
 builder.Logging.AddSerilog(logger);
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling =
+                Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -44,6 +48,8 @@ builder.Services.AddScoped<ConcessionariaPersistence>();
 builder.Services.AddScoped<ModeloCaminhaoPersistence>();
 builder.Services.AddScoped<MontadoraPersistence>();
 builder.Services.AddScoped<PedidoPersistence>();
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddMvc().ConfigureApiBehaviorOptions(options =>
 {

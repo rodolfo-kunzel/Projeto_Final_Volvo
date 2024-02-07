@@ -29,12 +29,13 @@ namespace Persistence
 
             return await query.ToArrayAsync();
         }
-        public async Task<Caminhao?> GetCaminhaoByIdAsync(int id)
+        public async Task<Caminhao?> GetCaminhaoByIdAsync(int id, bool includeModelo = true, bool includeMontadora = true, bool includeConcessionaria = true)
         {
-            IQueryable<Caminhao> query = _context.Caminhoes
-                            .Include(c => c.Modelo)
-                            .Include(c => c.Montadora)
-                            .Include(c => c.Concessionaria);
+            IQueryable<Caminhao> query = _context.Caminhoes;
+
+            if(includeModelo) query.Include(c => c.Modelo);
+            if(includeMontadora) query.Include(c => c.Montadora);
+            if(includeConcessionaria) query.Include(c => c.Concessionaria);
 
             query = query
                 .OrderBy(c => c.Id)

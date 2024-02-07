@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Persistence.ContextDB;
 
 namespace Persistence
@@ -12,11 +13,14 @@ namespace Persistence
         public GeralPersistence(ProjetoFinalDBContext _context)
         {
             this._context = _context;
+            _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
         public void Add<T>(T entity) where T : class
         {
             _context.Add(entity);
         }
+
+
 
         public void Update<T>(T entity) where T : class
         {

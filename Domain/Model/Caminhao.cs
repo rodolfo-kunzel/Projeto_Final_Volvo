@@ -29,5 +29,8 @@ namespace Domain
         [Required]
         public int ConcessionariaId{ get; set;}
         public Concessionaria? Concessionaria { get; set;}
+
+        public int? PedidoId{ get; set;}
+        public Pedido? Pedido { get; set;}
     }
 }

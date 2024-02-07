@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using System.Threading.Tasks;
 using Domain;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -13,12 +14,16 @@ namespace Application
     {
         private readonly GeralPersistence _geralPersistence;
         private readonly PedidoPersistence _pedidoPersistence;
+        private readonly CaminhaoService _caminhaoService;
+
 
         public PedidoService(GeralPersistence geralPersistence,
-                                      PedidoPersistence pedidoPersistence)
+                                      PedidoPersistence pedidoPersistence,
+                                      CaminhaoService caminhaoService)
         {
             _geralPersistence = geralPersistence;
             _pedidoPersistence = pedidoPersistence;
+            _caminhaoService = caminhaoService;
         }
 
         public async Task<Pedido[]> GetAllPedidosAsync()
@@ -34,7 +39,7 @@ namespace Application
             }
         }
 
-        public async Task<Pedido?> GetPedidoByIdAsync(int Id)
+        public async Task<Pedido> GetPedidoByIdAsync(int Id)
         {
             try
             {
@@ -47,7 +52,7 @@ namespace Application
             }
         }
 
-        public async Task<Pedido?> GetPedidoByDateAsync(DateTime date)
+        public async Task<Pedido> GetPedidoByDateAsync(DateTime date)
         {
             try
             {
@@ -73,14 +78,25 @@ namespace Application
             }
         }
 
-        public async Task<Pedido?> AddPedido(Pedido model)
+        public async Task<Pedido> AddPedido(Pedido model, string ids)
         {
             try
             {
-                _geralPersistence.Add<Pedido>(model);
-                if (await _geralPersistence.SaveChangesAsync())
+                var listaIds = _caminhaoService.GetListofIds(ids);
+                if (await _caminhaoService.IdListIsValid(listaIds))
                 {
-                    return await _pedidoPersistence.GetPedidoByIdAsync(model.Id);
+                    _geralPersistence.Add<Pedido>(model);
+                    var pedidoId = _pedidoPersistence._context.Entry(model).Property(e => e.Id).CurrentValue;
+
+                    foreach (var item in listaIds)
+                    {
+                        await _caminhaoService.UpdateCaminhaoPedido(item, pedidoId);
+                    }
+
+                    if (await _geralPersistence.SaveChangesAsync())
+                    {
+                        return await _pedidoPersistence.GetPedidoByIdAsync(model.Id);
+                    }
                 }
                 return null;
             }
@@ -90,7 +106,7 @@ namespace Application
             }
         }
 
-        public async Task<Pedido?> UpdatePedido(int Id, Pedido model)
+        public async Task<Pedido> UpdatePedido(int Id, Pedido model)
         {
             try
             {
@@ -102,7 +118,6 @@ namespace Application
                 if (await _geralPersistence.SaveChangesAsync())
                 {
                     return await _pedidoPersistence.GetPedidoByIdAsync(model.Id);
-
                 }
                 return null;
             }
@@ -126,5 +141,7 @@ namespace Application
                 throw new Exception(ex.Message);
             }
         }
+
+        
     }
 }
