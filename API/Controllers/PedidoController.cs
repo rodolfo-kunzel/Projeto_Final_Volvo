@@ -145,7 +145,12 @@ namespace API.Controllers
         {
             try
             {
-                var pedido = await _pedidoService.UpdatePedido(id, model);
+                var pedido = await _pedidoService.GetPedidoByIdAsync(id, false, true) ??
+                throw new PedidoNuloException(Mensagens.pedidoNulo);
+
+                model.DataAbertura = pedido.DataAbertura;
+
+                pedido = await _pedidoService.UpdatePedido(id, model);
 
                 return Ok(pedido);
             }
