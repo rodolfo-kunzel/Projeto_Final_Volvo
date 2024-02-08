@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -33,14 +29,25 @@ namespace API.Controllers
             try
             {
                 var faturas = await _faturamentoService.GetFaturaByConcessionariaIdAsync(id);
-                if (faturas == null) return NoContent();
                 return Ok(faturas);
+            }
+            catch (FaturamentosNaoEncontradosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroNaBuscaDeFaturamento} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -50,15 +57,26 @@ namespace API.Controllers
             try
             {
                 var fatura = await _faturamentoService.GetFaturaByConcIdYearMonthAsync(id, ano, mes);
-                if (fatura == null) return NoContent();
 
                 return Ok(fatura);
+            }
+            catch (FaturamentoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroNaBuscaDeFaturamento} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 
@@ -69,7 +87,7 @@ namespace API.Controllers
             try
             {
                 var faturaConcessionaria = await _faturamentoService.GetFaturaByConcIdYearMonthAsync(idConcessionaria, DateTime.Now.Year, DateTime.Now.Month);
-                if (faturaConcessionaria != null) throw new Exception("Fatura do mês já gerada");
+                if (faturaConcessionaria != null) throw new FaturamentoRepetidoException(Mensagens.faturamentoRepetido);
 
                 double faturamentoTotal = 0;
                 foreach (var item in await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria))
@@ -79,14 +97,32 @@ namespace API.Controllers
                 //return Ok(await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria));
 
                 var fatura = await _faturamentoService.AddFatura(idConcessionaria, faturamentoTotal);
-                if (fatura == null) return NoContent();
 
                 return Ok(faturaConcessionaria);
             }
+            catch (FaturamentoRepetidoException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
+            }
+            catch (FaturamentoNuloException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status404NotFound,
+                    $"{Mensagens.erroNaBuscaDeFaturamento} Erro: {ex.Message}");
+            }
+            catch (AcessoDeDadosException ex) 
+            {
+                _logger.LogError(ex.Message);
+                 return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                    $"Erro ao tentar adicionar a montadora. Erro: {ex.Message}");
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
         }
 

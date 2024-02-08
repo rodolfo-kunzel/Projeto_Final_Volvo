@@ -5,6 +5,7 @@ namespace Domain {
         public static string erroDados = "Erro ocorreu ao tentar acessar o banco de dados";
         public static string erroInesparo = "Ocorreu um erro inesperado";
         public static string CNPJExistente = "CNPJ já cadastrado!";
+        public static string erroModelo = "Não foi possivel criar o modelo";
 
 
         // Caminhao
@@ -15,6 +16,7 @@ namespace Domain {
         public static string erroAoSalvarCaminhao = "Ocorreu um erro ao salvar o caminhão";
         public static string caminhaoRemovidoErro = "Não foi possivel deletar o caminhao";
         public static string caminhaoRemovidoSucesso = "O caminhao foi deletado com sucesso!";
+        public static string caminhaoInvalido = "Caminhão Inválido";
 
         //Cliente
         public static string numeroDocumentoExistente = "Numero do documento já cadastrado!";
@@ -62,6 +64,16 @@ namespace Domain {
         public static string pedidoRemovidaErro = "Não foi possivel deletar o pedido";
         public static string pedidoRemovidoSucesso = "O pedido foi deletado com sucesso!";
         public static string pedidoIdInvalido = "O id do pedido é inválido";
+
+        //Faturamento
+
+        public static string faturamentoNulo = "O faturamento selecionado não existe";
+        public static string listaFaturamentosVazia = "Nenhuma faturamento foi encontrado";
+        public static string erroNaBuscaDeFaturamento = "Occoreu um erro ao tentar recuperar o faturamento";
+        public static string erroAoSalvarFaturamento = "Ocorreu um erro ao salvar o faturamento";
+        public static string faturamentoRemovidaErro = "Não foi possivel deletar o faturamento";
+        public static string faturamentoRemovidoSucesso = "O faturamento foi deletado com sucesso!";
+        public static string faturamentoRepetido = "Esse faturamento já foi genrado";
 
     }
 }

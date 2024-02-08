@@ -79,7 +79,7 @@ namespace Application
             }
             catch (SqlException)
             {
-                throw new AcessoDeDadosException(Messages.erroDados);
+                throw new AcessoDeDadosException(Mensagens.erroDados);
             }
             catch (Exception ex)
             {
@@ -157,18 +157,22 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByNumeroChassiAsync(model.NumeroChassi);
-                if (caminhao != null) throw new Exception(Mensagens.numeroChassiExistente);
+
+                if (caminhao != null) throw new CaminhaoRepetidoException(Mensagens.numeroChassiExistente);
+
                 _geralPersistence.Add<Caminhao>(model);
-                if (await _geralPersistence.SaveChangesAsync())
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
                 {
-
-                    caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id) ??
-                    throw new CaminhaoNuloException(Mensagens.caminhaoNulo);;
-
-                    return caminhao;
-
+                    throw new CaminhaoNaoSalvoException(Mensagens.erroAoSalvarCaminhao);
                 }
-                return null;
+
+                caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id) ??
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
+
+                return caminhao;
             }
             catch (SqlException)
             {
@@ -195,15 +199,17 @@ namespace Application
 
                 _geralPersistence.Update<Caminhao>(model);
 
-                if (await _geralPersistence.SaveChangesAsync())
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
                 {
-                    caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id)??
-                    throw new CaminhaoNuloException(Mensagens.caminhaoNulo);;
-
-                    return caminhao;
-
+                    throw new CaminhaoNaoSalvoException(Mensagens.erroAoSalvarCaminhao);
                 }
-                return null;
+
+                caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(model.Id) ??
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
+
+                return caminhao;
             }
             catch (SqlException)
             {
@@ -223,13 +229,20 @@ namespace Application
         {
             try
             {
-                var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(IdCaminhao, false, false, false)
-                ?? throw new Exception("Caminhao selecionado para update não encontrada!");
+                var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(IdCaminhao, false, false, false) ?? 
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
 
                 caminhao.PedidoId = idPedido;
                 _geralPersistence.Update<Caminhao>(caminhao);
 
-                return true;
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                    throw new CaminhaoNaoSalvoException(Mensagens.erroAoSalvarCaminhao);
+                }
+
+                return salvo;
             }
             catch (SqlException)
             {
@@ -251,8 +264,17 @@ namespace Application
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id) ?? 
                 throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
+
                 _geralPersistence.Delete(caminhao);
-                return await _geralPersistence.SaveChangesAsync();
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                    throw new CaminhaoNaoPodeSerDeletadoException(Mensagens.caminhaoRemovidoErro);
+                }
+
+                return salvo;
             }
             catch (SqlException)
             {
@@ -273,11 +295,21 @@ namespace Application
             try
             {
                 var caminhao = await _caminhaoPersistence.GetCaminhaoByIdAsync(Id, false, false, false) ?? 
-                throw new CaminhaoNuloException(Messages.caminhaoNulo);
+                throw new CaminhaoNuloException(Mensagens.caminhaoNulo);
 
                 caminhao.PedidoId = null;
+
                 _geralPersistence.Update(caminhao);
-                return await _geralPersistence.SaveChangesAsync();
+
+
+                var salvo = await _geralPersistence.SaveChangesAsync();
+
+                if (!salvo)
+                {
+                    throw new CaminhaoNaoPodeSerDeletadoException(Mensagens.caminhaoRemovidoErro);
+                }
+
+                return salvo;
             }
             catch (SqlException)
             {
@@ -299,10 +331,14 @@ namespace Application
             {
                 foreach (int Id in IDs)
                 {
-                    var caminhao = await GetCaminhaoByIdAsync(Id);
-                    if (caminhao == null) throw new Exception("Caminhão selecionado inválido");
+                    var caminhao = await GetCaminhaoByIdAsync(Id) ?? 
+                    throw new CaminhaoInvalidoException(Mensagens.caminhaoInvalido);
+
                     if (caminhao.PedidoId != null)
+                    {
                         throw new Exception("O Caminhao de id " + Id +" já possui um pedido");
+                    }
+                        
                 }
                 return true;
             }
