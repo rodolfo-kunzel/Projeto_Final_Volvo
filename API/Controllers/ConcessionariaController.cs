@@ -35,13 +35,13 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
-                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                   $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                   $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -65,13 +65,13 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
-                   $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                   $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                   $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
 
             }
             catch (Exception ex)
@@ -96,25 +96,25 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
-                   $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                   $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
             }
             catch (ConcessionariaRepetidaException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                   $"{Messages.erroDados} Erro: {ex.Message}");
+                   $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                   $"{Messages.erroDados} Erro: {ex.Message}");
+                   $"{Mensagens.erroDados} Erro: {ex.Message}");
             }
             catch (ConcessionariaNaoSalvaException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
-                   $"{Messages.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+                   $"{Mensagens.erroAoSalvarConcessionaria} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -137,20 +137,20 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
-                   $"{Messages.concessionariaNula} Erro: {ex.Message}");
+                   $"{Mensagens.concessionariaNula} Erro: {ex.Message}");
             }
             catch (ConcessionariaNaoSalvaException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
-                   $"{Messages.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+                   $"{Mensagens.erroAoSalvarConcessionaria} Erro: {ex.Message}");
 
             }
             catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                   $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -187,14 +187,14 @@ namespace API.Controllers
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status404NotFound,
-                   $"{Messages.erroAoSalvarConcessionaria} Erro: {ex.Message}");
+                   $"{Mensagens.erroAoSalvarConcessionaria} Erro: {ex.Message}");
 
             }
             catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                   $"{Messages.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
+                   $"{Mensagens.erroNaBuscaDeConcessionarias} Erro: {ex.Message}");
 
             }
             catch (Exception ex)

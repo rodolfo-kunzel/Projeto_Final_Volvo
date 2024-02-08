@@ -73,7 +73,8 @@ namespace Domain {
         public static string erroAoSalvarFaturamento = "Ocorreu um erro ao salvar o faturamento";
         public static string faturamentoRemovidaErro = "Não foi possivel deletar o faturamento";
         public static string faturamentoRemovidoSucesso = "O faturamento foi deletado com sucesso!";
-        public static string faturamentoRepetido = "Esse faturamento já foi genrado";
+        public static string faturamentoRepetido = "Esse faturamento já foi gerado";
+        public static string faturamentoIdInvalido = "Não foi possível encontrar a concessionária";
 
     }
 }

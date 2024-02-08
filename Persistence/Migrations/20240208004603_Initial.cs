@@ -148,7 +148,7 @@ namespace Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DataAbertura = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DataEntrega = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DataEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StatusPedido = table.Column<int>(type: "int", nullable: false),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
                     FaturamentoId = table.Column<int>(type: "int", nullable: true)

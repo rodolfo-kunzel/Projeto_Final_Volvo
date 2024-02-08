@@ -12,7 +12,7 @@ using Persistence.ContextDB;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ProjetoFinalDBContext))]
-    [Migration("20240207174956_Initial")]
+    [Migration("20240208004603_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -314,7 +314,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("DataAbertura")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DataEntrega")
+                    b.Property<DateTime>("DataEntrega")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("FaturamentoId")
