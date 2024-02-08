@@ -225,7 +225,7 @@ namespace Application
             }
         }
 
-         public async Task<bool> UpdateCaminhaoPedido(int IdCaminhao, int idPedido)
+         public async Task<bool> UpdateCaminhaoPedido(int IdCaminhao, int? idPedido)
         {
             try
             {

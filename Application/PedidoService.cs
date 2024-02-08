@@ -47,11 +47,12 @@ namespace Application
             }
         }
 
-        public async Task<Pedido> GetPedidoByIdAsync(int Id)
+        public async Task<Pedido> GetPedidoByIdAsync(int Id,  bool includeCliente = true,
+                            bool includeCaminhoes = true)
         {
             try
             {
-                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id) ??
+                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id, includeCliente, includeCaminhoes) ??
                 throw new PedidoNuloException(Mensagens.pedidoNulo);
 
                 return pedido;
@@ -175,24 +176,27 @@ namespace Application
         {
             try
             {
-                var pedido = await _pedidoPersistence.GetPedidoByIdAsync(Id) ??
-                throw new PedidoNuloException(Mensagens.pedidoNulo);
-
-                model.Id = pedido.Id;
-
                 if (model.StatusPedido == 1)
                 {
                     model.DataEntrega = DateTime.Now;
                 }
 
-                if (model.ListaCaminhoes != null)
+                if (model.ListaCaminhoes != null && model.StatusPedido == 0)
                 {
                     foreach (var item in model.ListaCaminhoes)
                     {
-                        await _caminhaoService.UpdateCaminhaoPedido(item, pedido.Id);
+                        await _caminhaoService.UpdateCaminhaoPedido(item, model.Id);
                     }
                 }
 
+                if (model.Caminhoes != null && model.StatusPedido == 2)
+                {
+                    foreach (var item in model.Caminhoes)
+                    {
+                        await _caminhaoService.UpdateCaminhaoPedido(item.Id, null);
+                    }
+                }
+                model.Caminhoes = null;
                 _geralPersistence.Update<Pedido>(model);
 
                 var salvo = await _geralPersistence.SaveChangesAsync();
@@ -202,10 +206,10 @@ namespace Application
                      throw new PedidoNaoSalvoException(Mensagens.erroAoSalvarPedido);
                 }
 
-                pedido = await _pedidoPersistence.GetPedidoByIdAsync(model.Id) ??
+                var pedidoRetorno = await _pedidoPersistence.GetPedidoByIdAsync(model.Id) ??
                 throw new PedidoNuloException(Mensagens.pedidoNulo);
 
-                return pedido;
+                return pedidoRetorno;
             }
             catch (SqlException)
             {

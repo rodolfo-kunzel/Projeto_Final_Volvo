@@ -82,7 +82,7 @@ namespace API.Controllers
 
 
         [HttpPost("{idConcessionaria}")]
-        public async Task<IActionResult> GenerateFatura(int idConcessionaria)
+        public async Task<IActionResult> CreateFatura(int idConcessionaria)
         {
             try
             {
@@ -92,9 +92,9 @@ namespace API.Controllers
                 double faturamentoTotal = 0;
                 foreach (var item in await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria))
                 {
-                    faturamentoTotal += item.Valor;
+                    faturamentoTotal += item.Valor * item.Montadora.Comissao / 100;
                 }
-                return Ok(await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria));
+                //return Ok(await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria));
 
                 var fatura = await _faturamentoService.AddFatura(idConcessionaria, faturamentoTotal);
 

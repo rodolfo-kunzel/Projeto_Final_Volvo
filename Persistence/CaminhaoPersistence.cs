@@ -54,7 +54,8 @@ namespace Persistence
                 .OrderBy(c => c.Id)
                 .Where(c => c.ConcessionariaId == idConcessionaria)
                 .Where(c => c.Pedido.DataEntrega.Year == year)
-                .Where(c => c.Pedido.DataEntrega.Month == month);
+                .Where(c => c.Pedido.DataEntrega.Month == month)
+                .Include(c => c.Montadora);
 
             return await query.ToArrayAsync();
         }

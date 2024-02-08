@@ -26,17 +26,17 @@ namespace API.Controllers
 
                 return Ok(pedidos);
             }
-            catch (PedidosNaoEncontradosException ex) 
+            catch (PedidosNaoEncontradosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -55,17 +55,17 @@ namespace API.Controllers
 
                 return Ok(pedido);
             }
-            catch (PedidosNaoEncontradosException ex) 
+            catch (PedidosNaoEncontradosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -84,17 +84,17 @@ namespace API.Controllers
 
                 return Ok(pedido);
             }
-            catch (PedidosNaoEncontradosException ex) 
+            catch (PedidosNaoEncontradosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -114,23 +114,23 @@ namespace API.Controllers
 
                 return Ok(pedido);
             }
-            catch (PedidosNaoEncontradosException ex) 
+            catch (PedidosNaoEncontradosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
-            catch (PedidoNaoSalvoException ex) 
+            catch (PedidoNaoSalvoException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroAoSalvarPedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroAoSalvarPedido} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -149,23 +149,23 @@ namespace API.Controllers
 
                 return Ok(pedido);
             }
-            catch (PedidosNaoEncontradosException ex) 
+            catch (PedidosNaoEncontradosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
-            catch (PedidoNaoSalvoException ex) 
+            catch (PedidoNaoSalvoException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroAoSalvarPedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroAoSalvarPedido} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -180,43 +180,45 @@ namespace API.Controllers
         {
             try
             {
-                var pedido = await _pedidoService.GetPedidoByIdAsync(id);
+                var pedido = await _pedidoService.GetPedidoByIdAsync(id, false, true) ??
+                throw new PedidoNuloException(Mensagens.pedidoNulo);
 
                 pedido.StatusPedido = 2;
 
                 if (await _pedidoService.UpdatePedido(pedido.Id, pedido) != null)
                 {
-                    if (await _pedidoService.CancelPedido(pedido.Id))
-                    {
-                        return Ok("Pedido cancelado com sucesso!");
-                    }
+                    return Ok("Pedido cancelado com sucesso!");
+                    // if (await _pedidoService.CancelPedido(pedido.Id))
+                    // {
+                    //     
+                    // }
                 }
 
                 throw new Exception("Ocorreu um problema não específico ao tentar excluir o pedido.");
             }
-            catch (PedidosNaoEncontradosException ex) 
+            catch (PedidosNaoEncontradosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
-            catch (PedidoNaoPodeSerDeletadoException ex) 
+            catch (PedidoNaoPodeSerDeletadoException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroInesparo} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroInesparo} Erro: {ex.Message}");
             }
-            catch (PedidoNaoSalvoException ex) 
+            catch (PedidoNaoSalvoException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status404NotFound,
-                    $"{Mensagens.erroAoSalvarPedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status404NotFound,
+                   $"{Mensagens.erroAoSalvarPedido} Erro: {ex.Message}");
             }
-            catch (AcessoDeDadosException ex) 
+            catch (AcessoDeDadosException ex)
             {
                 _logger.LogError(ex.Message);
-                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   $"{Mensagens.erroNaBuscaDePedido} Erro: {ex.Message}");
             }
             catch (Exception ex)
             {
