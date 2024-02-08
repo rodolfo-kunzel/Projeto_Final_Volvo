@@ -235,14 +235,7 @@ namespace Application
                 caminhao.PedidoId = idPedido;
                 _geralPersistence.Update<Caminhao>(caminhao);
 
-                var salvo = await _geralPersistence.SaveChangesAsync();
-
-                if (!salvo)
-                {
-                    throw new CaminhaoNaoSalvoException(Mensagens.erroAoSalvarCaminhao);
-                }
-
-                return salvo;
+                return true;
             }
             catch (SqlException)
             {

@@ -94,10 +94,11 @@ namespace API.Controllers
                 {
                     faturamentoTotal += item.Valor;
                 }
-                //return Ok(await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria));
+                return Ok(await _caminhaoService.GetSoldCaminhaoByConcessionariaIdAsync(idConcessionaria));
 
                 var fatura = await _faturamentoService.AddFatura(idConcessionaria, faturamentoTotal);
 
+                
                 return Ok(faturaConcessionaria);
             }
             catch (FaturamentoRepetidoException ex) 

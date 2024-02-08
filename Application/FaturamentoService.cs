@@ -25,7 +25,7 @@ namespace Application
                 var faturas = await _faturamentoPersistence.GetFaturaByConcessionariaIdAsync(idConcessionaria);
 
                 if (faturas == null || faturas.Length == 0) {
-                    throw new ClientesNaoEncontradosException(Mensagens.listaClientesVazia);
+                    throw new FaturamentoNuloException(Mensagens.faturamentoConcessionariaNulo);
                 }
 
                 return faturas;
@@ -44,12 +44,11 @@ namespace Application
             }
         }
 
-        public async Task<Faturamento> GetFaturaByConcIdYearMonthAsync(int idConcessionaria, int ano, int mes)
+        public async Task<Faturamento?> GetFaturaByConcIdYearMonthAsync(int idConcessionaria, int ano, int mes)
         {
             try
             {
-                var fatura = await _faturamentoPersistence.GetFaturaByConcIdYearMonthAsync(idConcessionaria, ano, mes)??
-                throw new FaturamentoNuloException(Mensagens.faturamentoNulo);
+                var fatura = await _faturamentoPersistence.GetFaturaByConcIdYearMonthAsync(idConcessionaria, ano, mes);
 
                 return fatura;
             }
@@ -84,7 +83,7 @@ namespace Application
                     throw new FaturamentoNaoSalvoException(Mensagens.erroAoSalvarFaturamento);
                 }
 
-                var faturamento = await _faturamentoPersistence.GetFaturaByIdAsync(model.Id)??
+                var faturamento = await _faturamentoPersistence.GetFaturaByConcIdYearMonthAsync(model.Id, DateTime.Now.Year, DateTime.Now.Month)??
                 throw new FaturamentoNuloException(Mensagens.faturamentoNulo);
 
                 return faturamento;

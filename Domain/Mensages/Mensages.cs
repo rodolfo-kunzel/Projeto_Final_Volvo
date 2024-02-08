@@ -68,6 +68,7 @@ namespace Domain {
         //Faturamento
 
         public static string faturamentoNulo = "O faturamento selecionado não existe";
+        public static string faturamentoConcessionariaNulo = "A concessionária selecionada não possui faturamentos";
         public static string listaFaturamentosVazia = "Nenhuma faturamento foi encontrado";
         public static string erroNaBuscaDeFaturamento = "Occoreu um erro ao tentar recuperar o faturamento";
         public static string erroAoSalvarFaturamento = "Ocorreu um erro ao salvar o faturamento";

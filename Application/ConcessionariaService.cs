@@ -67,30 +67,6 @@ namespace Application
             }
         }
 
-        // public async Task<double?> GetFaturamentoConcessionariaAsync(int Id)
-        // {
-        //     try
-        //     {
-        //         var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id);
-
-        //         double faturamento = 0;
-                
-        //         if (concessionaria == null) throw new Exception();
-                
-        //         if (!concessionaria.Caminhoes.IsNullOrEmpty())
-        //         {
-        //             foreach (var caminhao in concessionaria.Caminhoes!)
-        //             {
-        //                  if(caminhao.)
-        //             }
-        //         }
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         throw new Exception(ex.Message);
-        //     }
-        // }
-
         public async Task<Concessionaria?> AddConcessionaria(Concessionaria model)
         {
             try
@@ -168,7 +144,7 @@ namespace Application
         {
             try
             {
-                var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id)??
+                var concessionaria = await _concessionariaPersistence.GetConcessionariaByIdAsync(Id) ??
                 throw new ConcessionariaNuloException(Mensagens.concessionariaNula);
 
                 _geralPersistence.Delete(concessionaria);
@@ -179,7 +155,7 @@ namespace Application
                 {
                      throw new ConcessionariaNaoSalvaException(Mensagens.erroAoSalvarConcessionaria);
                 }
-                return await _geralPersistence.SaveChangesAsync();
+                return salvo;
             }
             catch (SqlException)
             {

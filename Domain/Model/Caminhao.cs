@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,6 +24,7 @@ namespace Domain
         public ModeloCaminhao? Modelo { get; set;}
 
         [Required]
+        [DefaultValue(1)]
         public int MontadoraId{ get; set;}
         public Montadora? Montadora { get; set;}
 
