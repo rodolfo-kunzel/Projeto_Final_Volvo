@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Domain;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -53,7 +48,7 @@ namespace Application
         {
             try
             {
-                var cliente = await _clientePersistence.GetClienteByIdAsync(Id)??
+                var cliente = await _clientePersistence.GetClienteByIdAsync(Id) ??
                 throw new ClienteNuloException(Mensagens.clienteNulo);
 
                 return cliente;
