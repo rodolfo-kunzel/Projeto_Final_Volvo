@@ -5,28 +5,35 @@ Este projeto consiste em uma WebAPI para o gerenciamento de uma concessionária.
  
 ## Tecnologias Utilizadas
 Linguagem de Programação: .NET (8.0.1)
+
 Framework: .NET Core
+
 Banco de Dados: SQL Server
+
 ORM (Object-Relational Mapping): Entity Framework (8.0.1)
 
 ## Configuração do Ambiente
 Para configurar o ambiente de desenvolvimento local, siga os passos abaixo:
 
 ### Clonar o Repositório:
-`git clone` [https://github.com/rodolfo-kunzel/Projeto_Final_Volvo.git]
+`git clone` https://github.com/rodolfo-kunzel/Projeto_Final_Volvo.git
 
 ### Instalar Dependências:
 Primeiramente acesse o local do projeto.
+
 Em seguida utiliza o comando: dotnet restore
 
 ### Configurar Banco de Dados:
 Primeiramente acesse o arquivo ..\API\appsettings.Development.json
+
 Em "ConnectionStrings" é possível configurar seu acesso no Windows com: `"NomeDoAcesso": "Server:Caminho;Database:NomeDoDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;"`
+
 Após acesse o arquivo API\Program.cs e altere `context.UseSqlServer(config.GetConnectionString("NomeDoAcesso"))`
 
 ### Executar o Projeto:
 
-dotnet run 
+`dotnet run` 
+
 Ou `dotnet watch run` para abertura direta do swagger
 
 ##Estrutura do Projeto
@@ -47,4 +54,5 @@ Confira nosso vídeo de explicação e funcionamento do projeto o video contém 
 
 ## Autores
 André Igarashi
+
 Rodolfo Kunzel
